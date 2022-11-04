@@ -146,7 +146,7 @@ function Register({route, navigation }) {
         setLoading(false)
         Alert.alert(response.message);
         if(response.status =='success'){
-          navigation.navigate('MMCH')
+          navigation.replace('MMCH')
         }
       })
       .catch(function (error) {

@@ -53,7 +53,7 @@ function NoticeBoardDetail({route, navigation}){
         await MediaLibrary.createAlbumAsync("Download", asset, false)
     }
     return(
-        <ScrollView contentContainerStyle={styles.parent}>
+        <View contentContainerStyle={styles.parent}>
         <TopBar/>
         <MidContent title={
             {
@@ -62,7 +62,7 @@ function NoticeBoardDetail({route, navigation}){
                 subHeading :''
             }
         }  />
-            <View style={{paddingLeft:15, paddingRight:15}}>
+            <View style={styles.detailBox}>
                 <View style={styles.postBox}>
                     <View style={{width:'100%'}}>
                         <View style={{width:'100%'}}>
@@ -83,14 +83,18 @@ function NoticeBoardDetail({route, navigation}){
                     </TouchableOpacity>
                 </View>
             </View>
-        </ScrollView>
+        </View>
     )
 }
 const styles = StyleSheet.create({
-    
-    parent:{
-        backgroundColor:'#fafbff',
-        height:'100%',
+    detailBox:{ 
+        paddingLeft: 15, 
+        paddingRight: 15,
+        maxHeight:'72%',
+    },
+    parent: {
+        backgroundColor: '#fafbff',
+        height: '100%',
     },
     blueBtn :{
         marginTop:20,

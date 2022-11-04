@@ -57,13 +57,13 @@ function ApplyWallOfFame({ navigation }) {
                 {
                     img: require('./../../assets/wall_of_fame/wall_of_fame.png'),
                     heading: 'Wall of Fame',
-                    subHeading: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, incididunt ut'
+                    subHeading: "Exciting News!! We have launched Wall of Fame exclusively for our Alumni's. \n Share your achievement's with us and get a chance to be highlighted in the Wall of Fame."
                 }
             } />
             <View style={{ paddingLeft: 15, paddingRight: 15 }}>
                 <View style={styles.postBox}>
                     <View style={{ width: '30%' }}>
-                        <Image source={{ uri: userData.profile_pics }} style={{ width: 85, height: 75 }} />
+                        <Image source={{uri:userData.profile_pics}} style={{ width: 85, height: 75 }} />
                     </View>
                     <View style={{ width: '70%', justifyContent: 'center' }}>
                         <Text style={{ fontWeight: 'bold', color: '#666', textTransform: 'capitalize' }}>{userData.full_name}</Text>
@@ -74,7 +74,7 @@ function ApplyWallOfFame({ navigation }) {
                 <Text style={{ marginTop: 15, fontSize: 16, fontWeight: 'bold', color: '#666' }}>Please describe your achivements</Text>
                 <TextInput style={styles.textArea}
                     multiline={true}
-                    numberOfLines={7}
+                    numberOfLines={14}
                     onChangeText={(desc) => setDescription(desc)}
                     value={description}
                 />

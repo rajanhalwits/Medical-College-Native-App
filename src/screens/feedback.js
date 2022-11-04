@@ -10,7 +10,7 @@ function Feedback({navigation}){
     const [userData, setUserData] = useState([])
     useEffect(()=>{
         retrieveData()
-    })
+    },[])
     const retrieveData = async () => {
         try {
             const value = await AsyncStorage.getItem('user-info');
@@ -68,7 +68,7 @@ function Feedback({navigation}){
                 <Image source={require('./../../assets/edit.png')} style={styles.inputImg} />
                 <Text style={{marginTop:30, color:'#999'}}>Type your Suggestion</Text>
                 <TextInput style={styles.textArea} multiline={true}
-                    numberOfLines={7}
+                    numberOfLines={14}
                     onChangeText={(sugg)=>setSuggestion(sugg)}
                     value={suggestion}/>
                 <TouchableOpacity style={styles.blueBtn} onPress={()=>sendFeedback()}>
@@ -81,7 +81,7 @@ function Feedback({navigation}){
 const styles = StyleSheet.create({
     parent:{
         backgroundColor:'#fafbff',
-        height:'100%',
+        minHeight:'100%',
     },
     blueBtn :{
         marginTop:30,

@@ -45,11 +45,17 @@ function TopBar(){
     AsyncStorage.clear();
     navigation.navigate('MMCH');
   }
+  const goTOPrevScreen = () =>{
+    if(navigation.canGoBack()){
+      navigation.goBack();
+    }
+  
+  }
     return(
       <View style={{position:'absolute', top:0}}>
       <View style={styles.TopBar} >
         <View style={{width:'50%'}}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={() => goTOPrevScreen()}>
           <Image source={require('./../../assets/back_arrow.png')} style={styles.menuBar} />
           </TouchableOpacity>
         </View>

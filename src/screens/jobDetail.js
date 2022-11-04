@@ -85,7 +85,7 @@ function JobDetail({ route, navigation }) {
         await MediaLibrary.createAlbumAsync("Download", asset, false)
     }
     return (
-        <ScrollView contentContainerStyle={styles.parent}>
+        <View contentContainerStyle={styles.parent}>
             <TopBar />
             <MidContent title={
                 {
@@ -94,7 +94,7 @@ function JobDetail({ route, navigation }) {
                     subHeading: ''
                 }
             } />
-            <View style={{ paddingLeft: 15, paddingRight: 15 }}>
+            <ScrollView style={styles.detailBox}>
                 <View style={styles.postBox}>
                     <View style={{ width: '100%' }}>
                         <View style={{ width: '100%' }}>
@@ -157,15 +157,20 @@ function JobDetail({ route, navigation }) {
                         </Text>
                     </TouchableOpacity>
                 </View>
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </View>
     )
 }
 const styles = StyleSheet.create({
+    detailBox:{ 
+        paddingLeft: 15, 
+        paddingRight: 15,
+        maxHeight:'72%',
+    },
 
     parent: {
         backgroundColor: '#fafbff',
-        minHeight: '100%',
+        height: '100%',
     },
     blueBtn: {
         marginTop: 20,

@@ -86,7 +86,8 @@ function Alumni({ navigation }) {
                     renderItem={({ item }) => (
                         <View style={styles.postBox}>
                             <View style={styles.profile}>
-                                <Image source={{url: item.profile_pics}} style={styles.profilePic} />
+                                <Image source={{uri:item.profile_pics}} style={styles.profilePic} />
+                                
                             </View>
                             <View style={styles.name}>
                                 <Text style={{ color: '#333', fontWeight: 'bold' }}>{item.full_name}</Text>

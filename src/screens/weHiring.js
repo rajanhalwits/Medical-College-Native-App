@@ -71,7 +71,7 @@ function WeAreHiring({navigation}){
                                     
                                 </View>
                             </View>
-                            <View style={{width:'5%', alignItems:'flex-end', justifyContent:"flex-end", paddingBottom:2}}>
+                            <View style={{width:'5%', alignItems:'flex-end', justifyContent:"center", paddingBottom:2}}>
                                 <Image source={require('./../../assets/arrow.png')} style={styles.arrowImg} />
                             </View>
                         </Pressable>
@@ -91,12 +91,12 @@ const styles = StyleSheet.create({
         fontSize:12, 
         color:'#666',
         marginBottom:2,
-        marginTop:2,
+        marginTop:18,
     },
     urgetTxt:{
         fontSize:11, 
         color:'#FFF', 
-        textAlign:'center'
+        textAlign:'center',
     },
     parent: {
         backgroundColor:'#fafbff',
@@ -116,7 +116,8 @@ const styles = StyleSheet.create({
         backgroundColor:'#0866A6',
         borderRadius:5,
         textAlign:'center',
-        justifyContent:'center'
+        justifyContent:'center',
+        marginTop:15
     },
     arrowImg:{
         width:10,

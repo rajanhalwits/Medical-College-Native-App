@@ -65,7 +65,7 @@ function Login({ navigation }) {
                 console.log(response);
                 if (response.status == 'success') {
                     AsyncStorage.setItem('user-info', JSON.stringify(response.user_list))
-                    navigation.navigate('Alumni');
+                    navigation.replace('Alumni');
                 } else {
                     setErrorMsg(response.message)
                 }

@@ -37,7 +37,7 @@ function WallOfFame({ navigation }) {
                 {
                     img: require('./../../assets/wall_of_fame/wall_of_fame.png'),
                     heading: 'Wall of Fame',
-                    subHeading: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, incididunt ut'
+                    subHeading: "Exciting News!! We have launched Wall of Fame exclusively for our Alumni's. \n Share your achievement's with us and get a chance to be highlighted in the Wall of Fame."
                 }
             } />
             <View style={{ paddingLeft: 15, paddingRight: 15 }}>
