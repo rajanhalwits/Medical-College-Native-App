@@ -91,7 +91,7 @@ function Alumni({ navigation }) {
                             </View>
                             <View style={styles.name}>
                                 <Text style={{ color: '#333', fontWeight: 'bold' }}>{item.full_name}</Text>
-                                <Text style={{ color: '#666', fontSize: 13 }}>{item.batch_name}</Text>
+                                <Text style={{ color: '#666', fontSize: 13 }}>Batch: {item.batch_name}</Text>
                                 <Text style={{ color: '#666', fontSize: 13 }}>{item.current_specializatoin}</Text>
                             </View>
                             <View style={styles.contact}>

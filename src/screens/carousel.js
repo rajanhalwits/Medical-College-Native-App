@@ -33,15 +33,18 @@ function Carousel({ route, navigation }) {
         }
     }
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#333' }}>
-            <TopBar />
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#000' }}>
+            {/* <TopBar />
             <MidContent title={
                 {
                     img: '',
                     heading: '',
                     subHeading: ''
                 }
-            } />
+            } /> */}
+            {
+                
+            }
             {
                 carouselItem.length > 0
                     ?

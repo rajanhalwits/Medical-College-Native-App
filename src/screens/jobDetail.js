@@ -39,7 +39,7 @@ function JobDetail({ route, navigation }) {
         });
     }
     const sendWhatsApp = () => {
-        let msg = "Attach resume...";
+        let msg = jobData.title;
         let phoneWithCountryCode = `+91${jobData.whatsapp_no}`;
 
         let mobile =
@@ -69,21 +69,21 @@ function JobDetail({ route, navigation }) {
         )
     }
     const saveToCameraRoll = async (image) =>{
-        let {status} = await Camera.getCameraPermissionsAsync();
+        let {status} = await MediaLibrary.requestPermissionsAsync();
          console.log(status);
         if(status !=='granted'){
              console.log('ask for permission');
-             status = await Camera.getCameraPermissionsAsync();
+             status = await MediaLibrary.requestPermissionsAsync();
          }
          if(status ==='granted'){
-             FileSystem.downloadAsync(image, FileSystem.documentDirectory+jobData.file_name+'.jpg').then(({uri})=>{
+             FileSystem.downloadAsync(image, FileSystem.documentDirectory+jobData.file_name+''+jobData.file_type).then(({uri})=>{
                  MediaLibrary.saveToLibraryAsync(uri)
-                 Alert.alert('Documennt saved into device')
+                 Alert.alert('Document saved into device')
              }).catch(error =>{
                  console.log(error)
              })
          }else{
-             Alert.alert('required permissions')
+             Alert.alert('Allow the Permissions to download the document')
          } 
      }
     return (
@@ -102,7 +102,8 @@ function JobDetail({ route, navigation }) {
                         <View style={{ width: '100%' }}>
                             <View style={{ flexDirection: 'row' }}>
                                 <View style={{ width: '82%' }}>
-                                    <Text style={{ fontSize: 14, fontWeight: 'bold', textTransform:'capitalize' }}>{jobData.title}</Text>
+                                    <Text style={{ fontSize: 14, fontWeight: 'bold', textTransform:'capitalize' }}>
+                                        {jobData.title}</Text>
                                 </View>
                                 <View style={{ width: '18%' }}>
                                     <View style={styles.urgent}>

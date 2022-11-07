@@ -40,21 +40,21 @@ function NoticeBoardDetail({route, navigation}){
     }
     
     const saveToCameraRoll = async (image) =>{
-       let {status} = await Camera.getCameraPermissionsAsync();
+       let {status} = await MediaLibrary.requestPermissionsAsync();
         console.log(status);
        if(status !=='granted'){
             console.log('ask for permission');
-            status = await Camera.getCameraPermissionsAsync();
+            status = await MediaLibrary.requestPermissionsAsync();
         }
         if(status ==='granted'){
-            FileSystem.downloadAsync(image, FileSystem.documentDirectory+noticeData.id+'.jpg').then(({uri})=>{
+            FileSystem.downloadAsync(image, FileSystem.documentDirectory+noticeData.id+''+noticeData.file_type).then(({uri})=>{
                 MediaLibrary.saveToLibraryAsync(uri)
-                Alert.alert('Documennt saved into device');
+                Alert.alert('Document saved into device');
             }).catch(error =>{
                 console.log(error)
             })
         }else{
-            Alert.alert('required permissions');
+            Alert.alert('Allow the Permissions to download the document');
         } 
     }
     return(
@@ -80,18 +80,17 @@ function NoticeBoardDetail({route, navigation}){
                     </View>
                 </View>
                 <View>
-                    {
-                        noticeData.document !='' ?
-                        <TouchableOpacity style={styles.blueBtn} onPress={()=>saveToCameraRoll(noticeData.document)}>
-                            <Text style={styles.btnText}>
-                                <Image source={require('./../../assets/job_description/downlog_bt.png')} style={{ width: 14, height: 14, marginRight:15}} /> 
-                                &nbsp;Download
-                            </Text>
-                        </TouchableOpacity>
-                        : 
-                        null
-                    }
-                    
+                {
+                    noticeData.document !='' ?
+                    <TouchableOpacity style={styles.blueBtn} onPress={()=>saveToCameraRoll(noticeData.document)}>
+                        <Text style={styles.btnText}>
+                            <Image source={require('./../../assets/job_description/downlog_bt.png')} style={{ width: 14, height: 14, marginRight:15}} /> 
+                            &nbsp;Download
+                        </Text>
+                    </TouchableOpacity>
+                    : 
+                    null
+                }
                 </View>
             </View>
         </View>
