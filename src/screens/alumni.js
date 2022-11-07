@@ -120,22 +120,23 @@ const styles = StyleSheet.create({
         minHeight: '100%',
     },
     profile: {
-        width: '20%',
+        width: '19%',
     },
     contact: {
-        width: '16%',
+        width: '17%',
     },
     name: {
         width: '64%',
         justifyContent: 'center'
     },
     contactIcon: {
-        width: 50,
-        height: 50,
+        width: 55,
+        height: 55,
     },
     profilePic: {
-        width: 50,
-        height: 50,
+        width: 55,
+        height: 55,
+        borderRadius:55/2
     },
     blueBtn: {
         marginTop: 20,
@@ -190,7 +191,9 @@ const styles = StyleSheet.create({
         marginTop: 8,
         borderBottomWidth: 1,
         paddingBottom: 8,
-        paddingTop: 8
+        paddingTop: 8,
+        paddingLeft:5,
+        paddingRight:5
     },
 });
 export default Alumni;

@@ -1,12 +1,11 @@
 import TopBar from "./topBar";
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Platform, Linking } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Platform, Linking, Alert } from 'react-native'
 import MidContent from "../components/midContent";
 import { useEffect, useState } from "react";
 import { apiUrl } from "../constant";
-import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
-/* import * as Permissions from 'expo-permissions';
-import * as Location from 'expo-location'; */
+import * as Camera from 'expo-camera';
+import * as MediaLibrary from 'expo-media-library';
 function JobDetail({ route, navigation }) {
     const { jobId, otherParams } = route.params;
     const [jobData, setJobData] = useState([]);
@@ -69,21 +68,24 @@ function JobDetail({ route, navigation }) {
             </View>
         )
     }
-    function downloadFile(){
-        const uri = jobData.document
-        let fileUri = FileSystem.documentDirectory + ''+jobData.file_name;
-        FileSystem.downloadAsync(uri, fileUri)
-        .then(({ uri }) => {
-            saveFile(uri);
-          })
-          .catch(error => {
-            console.error(error);
-          })
-    }
-    const saveFile = async (fileUri) => {
-        const asset = await MediaLibrary.createAssetAsync(fileUri)
-        await MediaLibrary.createAlbumAsync("Download", asset, false)
-    }
+    const saveToCameraRoll = async (image) =>{
+        let {status} = await Camera.getCameraPermissionsAsync();
+         console.log(status);
+        if(status !=='granted'){
+             console.log('ask for permission');
+             status = await Camera.getCameraPermissionsAsync();
+         }
+         if(status ==='granted'){
+             FileSystem.downloadAsync(image, FileSystem.documentDirectory+jobData.file_name+'.jpg').then(({uri})=>{
+                 MediaLibrary.saveToLibraryAsync(uri)
+                 Alert.alert('Documennt saved into device')
+             }).catch(error =>{
+                 console.log(error)
+             })
+         }else{
+             Alert.alert('required permissions')
+         } 
+     }
     return (
         <View contentContainerStyle={styles.parent}>
             <TopBar />
@@ -143,7 +145,7 @@ function JobDetail({ route, navigation }) {
                     </View>
                 </View>
                 <View>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.blueBtn} onPress={()=>downloadFile()}>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.blueBtn} onPress={()=>saveToCameraRoll(jobData.document)}>
                         <Text style={styles.btnText}>
                             <Image source={require('./../../assets/job_description/downlog_bt.png')} style={{ width: 14, height: 14, marginRight: 15 }} />
                             &nbsp;Download

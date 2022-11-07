@@ -1,10 +1,11 @@
 import TopBar from "./topBar";
-import{View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert} from 'react-native'
+import{View, Text, StyleSheet, Image, TouchableOpacity, Alert} from 'react-native'
 import MidContent from "../components/midContent";
 import { apiUrl } from "../constant";
 import { useEffect, useState } from "react";
-import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
+import * as Camera from 'expo-camera';
+import * as MediaLibrary from 'expo-media-library';
 
 function NoticeBoardDetail({route, navigation}){
     const {noticeId, otherParam} = route.params;
@@ -37,20 +38,24 @@ function NoticeBoardDetail({route, navigation}){
             console.error(error);
         });
     }
-    function downloadFile(){
-        const uri = noticeData.document
-        let fileUri = FileSystem.documentDirectory + ''+noticeData.file_name;
-        FileSystem.downloadAsync(uri, fileUri)
-        .then(({ uri }) => {
-            saveFile(uri);
-          })
-          .catch(error => {
-            console.error(error);
-          })
-    }
-    const saveFile = async (fileUri) => {
-        const asset = await MediaLibrary.createAssetAsync(fileUri)
-        await MediaLibrary.createAlbumAsync("Download", asset, false)
+    
+    const saveToCameraRoll = async (image) =>{
+       let {status} = await Camera.getCameraPermissionsAsync();
+        console.log(status);
+       if(status !=='granted'){
+            console.log('ask for permission');
+            status = await Camera.getCameraPermissionsAsync();
+        }
+        if(status ==='granted'){
+            FileSystem.downloadAsync(image, FileSystem.documentDirectory+noticeData.id+'.jpg').then(({uri})=>{
+                MediaLibrary.saveToLibraryAsync(uri)
+                Alert.alert('Documennt saved into device');
+            }).catch(error =>{
+                console.log(error)
+            })
+        }else{
+            Alert.alert('required permissions');
+        } 
     }
     return(
         <View contentContainerStyle={styles.parent}>
@@ -75,12 +80,18 @@ function NoticeBoardDetail({route, navigation}){
                     </View>
                 </View>
                 <View>
-                    <TouchableOpacity style={styles.blueBtn} onPress={()=>downloadFile()}>
-                        <Text style={styles.btnText}>
-                            <Image source={require('./../../assets/job_description/downlog_bt.png')} style={{ width: 14, height: 14, marginRight:15}} /> 
-                            &nbsp;Download
-                        </Text>
-                    </TouchableOpacity>
+                    {
+                        noticeData.document !='' ?
+                        <TouchableOpacity style={styles.blueBtn} onPress={()=>saveToCameraRoll(noticeData.document)}>
+                            <Text style={styles.btnText}>
+                                <Image source={require('./../../assets/job_description/downlog_bt.png')} style={{ width: 14, height: 14, marginRight:15}} /> 
+                                &nbsp;Download
+                            </Text>
+                        </TouchableOpacity>
+                        : 
+                        null
+                    }
+                    
                 </View>
             </View>
         </View>

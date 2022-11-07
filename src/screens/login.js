@@ -28,7 +28,7 @@ function Login({ navigation }) {
         try {
             const value = await AsyncStorage.getItem('user-info');
             if (value !== null) {
-                navigation.navigate('Alumni')
+                navigation.replace('Alumni')
             } else {
                 console.log('not logged in')
             }

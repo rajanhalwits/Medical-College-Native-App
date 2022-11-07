@@ -58,7 +58,7 @@ function NoticeBoard({ navigation }) {
                                 <Text style={{ fontSize: 14, fontWeight: 'bold', textTransform: 'capitalize' }}>
                                     {item.title}
                                 </Text>
-                                <Text style={{ marginTop: 5, color: '#666', fontSize: 13 }}>
+                                <Text numberOfLines={2} ellipsizeMode='tail' style={{ marginTop: 5, color: '#666', fontSize: 13 }}>
                                     {item.description}
                                 </Text>
                                 <Text style={{ marginTop: 5, color: '#666', fontSize: 13 }}>

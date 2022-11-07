@@ -56,11 +56,11 @@ function Event({navigation}){
                         renderItem={({ item }) => (
                         <View style={styles.postBox}>
                             <View style={{width:'30%'}}>
-                                <Image source={{uri:item.photo}} style={{ width: 85, height: 85}} />
+                                <Image source={{uri:item.photo}} style={{ width: 85, height: 85, borderRadius:85/2}} />
                             </View>
                             <View style={{width:'70%',}}> 
                                 <Text style={{fontWeight:'bold', color:'#333'}}>{item.title}</Text>
-                                <Text style={{color:'#999', fontSize:12}}>{item.description}</Text>
+                                <Text numberOfLines={2} ellipsizeMode='tail' style={{color:'#999', fontSize:12}}>{item.description}</Text>
                                 <Text style={{color:'#999', fontSize:12, marginTop:5,}}>
                                     <Image source={require('./../../assets/calnder.png')} 
                                     style={{ width: 14, height: 14, marginTop:5}} /> &nbsp;
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
         borderRadius:5,
         borderColor:'#ddd',
         marginTop:8,
-        padding:8
+        padding:3
       },
   }); 
 export default Event;

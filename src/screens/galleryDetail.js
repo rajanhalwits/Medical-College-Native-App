@@ -75,9 +75,6 @@ function GalleryDetail({route, navigation}){
                     </View>
                 </View>
                 <View>
-                    {/* <Text>
-                        {JSON.stringify(galleryData).toString()}
-                    </Text> */}
                 <FlatList
                     data={galleryData}
                     numColumns={3}

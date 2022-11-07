@@ -53,10 +53,10 @@ function WallOfFame({ navigation }) {
                     showsVerticalScrollIndicator={false}
                     renderItem={({ item }) => (
                         <View style={styles.postBox}>
-                            <View style={{ width: '30%' }}>
-                                <Image source={{uri:item.profile_pics}} style={{ width: 85, height: 75 }} />
+                            <View style={{ width: '20%'}}>
+                                <Image source={{uri:item.profile_pics}} style={{ width: 55, height: 55, borderRadius:55/2 }} />
                             </View>
-                            <View style={{ width: '70%', justifyContent: 'center' }}>
+                            <View style={{ width: '80%', justifyContent: 'center' }}>
                                 <Text style={{ fontWeight: 'bold' }}>{item.full_name}</Text>
                                 <Text style={{ color: '#999' }}>Batch: ({item.batch_name})</Text>
                                 <Text style={{ color: '#999' }}>{item.current_specializatoin}</Text>
@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         borderColor: '#ddd',
         marginTop: 8,
+        padding:5
     },
 });
 export default WallOfFame;

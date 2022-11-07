@@ -62,10 +62,10 @@ function ApplyWallOfFame({ navigation }) {
             } />
             <View style={{ paddingLeft: 15, paddingRight: 15 }}>
                 <View style={styles.postBox}>
-                    <View style={{ width: '30%' }}>
-                        <Image source={{uri:userData.profile_pics}} style={{ width: 85, height: 75 }} />
+                    <View style={{ width: '20%' }}>
+                        <Image source={{uri:userData.profile_pics}} style={{ width: 55, height: 55, borderRadius:55/2 }} />
                     </View>
-                    <View style={{ width: '70%', justifyContent: 'center' }}>
+                    <View style={{ width: '80%', justifyContent: 'center' }}>
                         <Text style={{ fontWeight: 'bold', color: '#666', textTransform: 'capitalize' }}>{userData.full_name}</Text>
                         <Text style={{ color: '#999' }}>Batch: ({userData.batch_name})</Text>
                         <Text style={{ color: '#999' }}>{userData.current_specializatoin}</Text>
@@ -143,6 +143,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         borderColor: '#ddd',
         marginTop: 20,
+        padding:5
     },
 });
 export default ApplyWallOfFame;
