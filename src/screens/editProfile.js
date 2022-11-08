@@ -8,33 +8,176 @@ import Checkbox from 'expo-checkbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { apiUrl } from '../constant';
 import Loader from '../components/loader';
-function Getstarted({ navigation }) {
+import TopBar from './topBar';
+import MidContent from '../components/midContent';
+import * as ImagePicker from 'expo-image-picker';
+
+
+function EditProfile({ navigation }) {
 
   const [isSelected, setSelection] = useState(false);
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [text, setText] = useState('');
+
   const [name, setName] = useState('');
-  const [gender, setGender] = useState('1');
+  const [gender, setGender] = useState('');
+
   const [selectedBatch, setSelectedBatch] = useState('');
   const [selectedEntry, setSelectedEntry] = useState('');
   const [selectedCourse, setSelectedCourse] = useState('');
-  const [mobile, setMobile] = useState('');
   const [whatsApp, setWhatsApp] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  
   const [batchList, setBatchData] = useState([]);
   const [yearList, setyearData] = useState([]);
   const [courseList, setCourseData] = useState([]);
   const [specialization, setSpecialization] = useState('');
   const [isLoading, setLoading] = useState(true);
 
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedState, setSelectedState] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
+  const [otherState, setOtherState] = useState('');
+  const [otherCity, setOtherCity] = useState('');
+  const [image, setImage] = useState('');
+  const [address, setAddress] = useState('');
+  
+  const [countryList, setCountryData] = useState([]);
+  const [stateList, setStateData] = useState([]);
+  const [cityList, setCityData] = useState([]);
+  const [userId, setUserId] = useState('');
+
   useEffect(() => {
     fetchYear();
     fetchCourse();
+    retrieveData();
+    fetchCountry();
   }, []);
+  const retrieveData = async () => {
+    try {
+        const value = await AsyncStorage.getItem('user-info');
+        if (value !== null) {
+            console.log(JSON.parse(value));
+            console.log(new Date());
+            setUserId(JSON.parse(value).user_id);
+            setName(JSON.parse(value).full_name);
+            fromattedDate(new Date(JSON.parse(value).dob));
+            setDate(new Date(JSON.parse(value).dob))
+            setGender(JSON.parse(value).gender);
+            setSelectedCourse(JSON.parse(value).course_id);
+            getBatch(JSON.parse(value).course_id);
+            setSelectedBatch(JSON.parse(value).admissionbatch)
+            setSelectedEntry(JSON.parse(value).admission_year);
+            setSpecialization(JSON.parse(value).current_specializatoin);
+            
+            setWhatsApp(JSON.parse(value).whatsapp_number);
+            
+            
+            setSelectedCountry(JSON.parse(value).country_id);
+            fetchState(JSON.parse(value).country_id);
+            setSelectedState(JSON.parse(value).states_id);
+            fetchCity(JSON.parse(value).states_id);
+            setSelectedCity(JSON.parse(value).city_id)
+            setOtherState(JSON.parse(value).other_state);
+            setOtherCity(JSON.parse(value).other_city);
+            setAddress(JSON.parse(value).address);
+            setImage(JSON.parse(value).profile_pics)
+        }
+    } catch (error) {
+        // Error retrieving data
+    }
+}
+const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      base64: true,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setImage('data:image/jpeg;base64,' + result.base64); 
+    }
+  };
+  const fetchCountry = () => {
+    function json(response) {
+      return response.json()
+    }
+    var url = `${apiUrl}GetCountry`
+    fetch(url, {
+      method: 'post',
+      headers: {
+        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+      }
+    })
+      .then(json)
+      .then(function (response) {
+        setLoading(false)
+        if (response.status == 'success') {
+          setCountryData(response.countryList)
+        }else{
+          console.log(response);
+        }
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  }
+  const fetchState = (countryId) => {
+    setLoading(true)
+    setSelectedCountry(countryId);
+    function json(response) {
+      return response.json()
+    }
+    var url = `${apiUrl}GetState`;
+    fetch(url, {
+      method: 'post',
+      headers: {
+        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+      },
+      body: "country_code=" + countryId
+    })
+      .then(json)
+      .then(function (response) {
+        setLoading(false)
+        if (response.status == 'success') {
+          setStateData(response.stateList)
+        }
+        //console.log(response);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+
+  }
+  const fetchCity = (stateId) => {
+    setSelectedState(stateId)
+    setLoading(true)
+    function json(response) {
+      return response.json()
+    }
+    var url = `${apiUrl}GetCity`
+    fetch(url, {
+      method: 'post',
+      headers: {
+        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+      },
+      body: "state_id=" + stateId
+    })
+      .then(json)
+      .then(function (response) {
+        setLoading(false)
+        if (response.status == 'success') {
+          setCityData(response.cityList)
+        }
+        //console.log(response);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  }
   const fetchBatch = (courseId) => {
     function json(response) {
       return response.json()
@@ -72,7 +215,8 @@ function Getstarted({ navigation }) {
     })
       .then(json)
       .then(function (response) {
-        setLoading(false)
+        setLoading(false);
+        
         if (response.status == 'success') {
           setyearData(response.yearList)
         } else {
@@ -106,7 +250,15 @@ function Getstarted({ navigation }) {
         console.error(error);
       });
   }
+  const fromattedDate =(currentDate)=>{
+    let tempDate = new Date(currentDate);
+    let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
+    let fTime = 'Hours:' + tempDate.getHours() + ' | Minute:' + tempDate.getMinutes();
+    setText(fDate)
+  }
   const onChange = (event, selectedDate) => {
+    console.log('test ', selectedDate)
+    console.log('test2 ', selectedDate)
     const currentDate = selectedDate || date;
     setShow(Platform.OS === 'ios');
     setDate(currentDate);
@@ -119,39 +271,39 @@ function Getstarted({ navigation }) {
     setShow(true)
     setMode(currentMode)
   }
-  const toggleCheckbox = () => {
-    setSelection(!isSelected)
-    if (!isSelected) {
-      setWhatsApp(mobile)
-    }else{
-      setWhatsApp('')
-    }
-  }
+  
   const registerStepOne = () => {
-    let token = '257341a3-feea-4ba6-96e2-34b698072790';
-    setLoading(true)
+    setLoading(true);
+    let photo = '';
+    if(image.includes('data:image')){
+        photo = image;
+    }
+    //setImage(photo)
+    console.log('image before update --> ',photo);
+
     function json(response) {
       return response.json()
     }
-    var url = `${apiUrl}signup`
+    var url = `${apiUrl}updateProfile`
     fetch(url, {
       method: 'post',
       headers: {
-        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-        "Authorization": "Bearer " + token
+        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
       },
-
       body: "full_name=" + name + "&dob=" + date + "&gender=" + gender + "&admissionbatch=" + selectedBatch
-        + "&admission_year=" + selectedEntry + "&course_id=" + selectedCourse + "&mobile_number=" + mobile
-        + "&whatsapp_number=" + whatsApp + "&email_id=" + email + "&password=" + password
-        + "&comf_password=" + confirmPassword + "&current_specializatoin=" + specialization
+        + "&admission_year=" + selectedEntry + "&course_id=" + selectedCourse + "&whatsapp_number=" + whatsApp + 
+        "&current_specializatoin=" + specialization + "&user_id=" + userId + "&country_id=" + selectedCountry + 
+        "&states_id=" + selectedState + "&city_id=" + selectedCity + "&address=" + address + 
+        "&other_state=" + otherState + "&other_city=" + otherCity + "&profile_pics=" + photo
     })
       .then(json)
       .then(function (response) {
         console.log(response);
+        
         setLoading(false)
         if (response.status == 'success') {
-          navigation.navigate('SignUp',{signupId:response.signup_aid});
+          AsyncStorage.setItem('user-info', JSON.stringify(response.user_list))
+            navigation.replace('Alumni');
         } else {
           Alert.alert(response.message);
         }
@@ -167,12 +319,18 @@ function Getstarted({ navigation }) {
   return (
     
     <ScrollView style={{ backgroundColor: '#FAFBFF' }}>
+        <TopBar/>
+      <MidContent title={
+            {
+                img: require('./../../assets/change_password.png'),
+                heading : 'Edit Profile',
+                subHeading :''
+            }
+        }  />
       { isLoading ? <Loader /> : null}
-      <Image source={require('./../../assets/logo.png')} style={styles.midImg} />
-      <Text style={styles.midTitle}>Let's Get Started</Text>
-      <Text style={styles.midSubTitle}>Create an account to get all features</Text>
       
-      <View style={{ paddingLeft: 15, paddingRight: 15, marginTop: 10 }}>
+      <View style={{ paddingLeft: 15, paddingRight: 15}}>
+        
         <Text style={styles.formLabel}>Enter Your Name</Text>
         <TextInput style={styles.input}
           autoCapitalize="none"
@@ -201,7 +359,7 @@ function Getstarted({ navigation }) {
         <View style={{ flexDirection: 'row', marginTop: 25, marginBottom: 25 }}>
           <View style={{ width: '35%' }}>
             <TouchableOpacity onPress={() => setGender('1')} style={gender == '1' ? styles.uploadBtn : styles.genderBtn}>
-              <Text style={gender == '1' ? styles.btnTextActive : styles.btnText}>
+              <Text style={gender == '1' ? styles.btnTextActive : styles.genderText}>
                 {
                   gender == '1' ?
                     <Image source={require(`./../../assets/get_started/male_white.png`)} style={{ width: 20, height: 17 }} />
@@ -213,7 +371,7 @@ function Getstarted({ navigation }) {
           </View>
           <View style={{ width: '35%', marginLeft: '2%' }}>
             <TouchableOpacity onPress={() => setGender('2')} style={gender == '2' ? styles.uploadBtn : styles.genderBtn}>
-              <Text style={gender == '2' ? styles.btnTextActive : styles.btnText}>
+              <Text style={gender == '2' ? styles.btnTextActive : styles.genderText}>
                 {
                   gender == '2' ?
                     <Image source={require(`./../../assets/get_started/female.png`)} style={{ width: 20, height: 17 }} />
@@ -286,47 +444,97 @@ function Getstarted({ navigation }) {
         <Image source={require(`./../../assets/get_started/course.png`)} style={styles.inputImg} />
         <View style={{ borderBottomWidth: 2, borderColor: '#DDD', marginTop: 30 }}></View>
 
-        <Text style={styles.formLabel}>Enter Mobile Number</Text>
-        <TextInput style={styles.input} autoCapitalize="none" keyboardType='numeric' autoCorrect={false}
-          onChangeText={(mob) => setMobile(mob)}
-          value={mobile}
-        />
-        <Image source={require(`./../../assets/get_started/mobile_numer.png`)} style={styles.inputImg} />
-
         <Text style={styles.formLabel}>Enter WhatsApp Number</Text>
         <TextInput style={styles.input} autoCapitalize="none" keyboardType='numeric' autoCorrect={false}
           onChangeText={(whatsapp) => setWhatsApp(whatsapp)}
           value={whatsApp} />
 
         <Image source={require(`./../../assets/get_started/whatsapp.png`)} style={styles.inputImg} />
-
-        <View style={{ flexDirection: 'row', marginTop: 20, }}>
-          <View style={{ width: '100%', flexDirection: 'row' }}>
-            <Checkbox value={isSelected} onValueChange={toggleCheckbox} />
-            <TouchableOpacity activeOpacity={0.8} onPress={toggleCheckbox}>
-              <Text style={{ color: '#666', paddingLeft: 5 }}>Same as mobile number</Text>
-            </TouchableOpacity>
+        
+        
+        <View style={styles.selectBoxBtm}>
+            <Picker selectedValue={selectedCountry} style={styles.pickerItem}
+              onValueChange={(itemValue) =>
+                fetchState(itemValue)
+              }>
+              <Picker.Item label='Select Country' value='' />
+              {
+                countryList.length > 0 ?
+                  countryList.map((country) =>
+                    <Picker.Item label={country.name} value={country.code} key={country.code} />
+                  )
+                  : null
+              }
+            </Picker>
           </View>
-        </View>
-        <Text style={styles.formLabel}>Enter Email ID</Text>
-        <TextInput style={styles.input} autoCapitalize="none" autoCorrect={false}
-          onChangeText={(emailID) => setEmail(emailID)}
-          value={email} />
-        <Image source={require(`./../../assets/get_started/email_id.png`)} style={styles.inputImg} />
+          <Image source={require('./../../assets/country.png')} style={styles.inputImg} />
 
-        <Text style={styles.formLabel}>Enter Password</Text>
-        <TextInput style={styles.input} autoCapitalize="none" secureTextEntry={true} autoCorrect={false}
-          onChangeText={(pass) => setPassword(pass)}
-          value={password} />
 
-        <Image source={require(`./../../assets/password.png`)} style={styles.passwordIcon} />
-        <Text style={styles.formLabel}>Enter Confirm Password</Text>
-        <TextInput style={styles.input} autoCapitalize="none" secureTextEntry={true} autoCorrect={false}
-          onChangeText={(conPass) => setConfirmPassword(conPass)} />
+          {
+            selectedCountry == 'IN' || selectedCountry == '' ?
+              <View style={styles.selectBoxBtm}>
+                <Picker selectedValue={selectedState} style={styles.pickerItem}
+                  onValueChange={(itemValue) =>
+                    fetchCity(itemValue)
+                  }>
+                  <Picker.Item label='Select State' value='' />
+                  {
+                    stateList.length > 0 ?
+                      stateList.map((state) =>
+                        <Picker.Item label={state.name} value={state.id} key={state.name} />
+                      )
+                      : null
+                  }
+                </Picker>
+              </View>
+              :
+              <TextInput style={styles.input} autoCapitalize="none" autoCorrect={false} placeholder='Enter State'
+                onChangeText={(otrState) => setOtherState(otrState)} value={otherState} />
+          }
+          <Image source={require('./../../assets/state.png')} style={styles.inputImg} />
+          {
+            selectedCountry == 'IN' || selectedCountry == '' ?
+              <View style={styles.selectBoxBtm}>
+                <Picker selectedValue={selectedCity} style={styles.pickerItem}
+                  onValueChange={(itemValue) =>
+                    setSelectedCity(itemValue)
+                  }>
+                  <Picker.Item label='Select City' value='' />
+                  {
+                    cityList.length > 0 ?
+                      cityList.map((city) =>
+                        <Picker.Item label={city.name} value={city.id} key={city.name} />
+                      )
+                      : null
+                  }
+                </Picker>
+              </View>
+              :
+              <TextInput style={styles.input} autoCapitalize="none" autoCorrect={false} placeholder='Enter City'
+                onChangeText={(otrCity) => setOtherCity(otrCity)} value={otherCity} />
+          }
 
-        <Image source={require(`./../../assets/password.png`)} style={styles.passwordIcon} />
+          <Image source={require('./../../assets/country.png')} style={styles.inputImg} />
+          <TextInput style={styles.textArea} placeholder='Enter Address'
+            multiline={true}
+            numberOfLines={4}
+            onChangeText={(add) => setAddress(add)}
+            value={address}
+          />
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+
+            {
+              image && <Image source={{ uri: image }} style={{ width: 200, height: 200, marginBottom: 5 }} />
+            }
+          </View>
+          <TouchableOpacity activeOpacity={0.8} style={styles.uploadBtn} onPress={pickImage}>
+            <Text style={styles.btnText}><Image source={require('./../../assets/upload.png')} 
+            style={{ width: 20, height: 17 }} /> Change Profile Picture</Text>
+          </TouchableOpacity>
+
+        
         <TouchableOpacity style={styles.loginBtn} onPress={() => registerStepOne()}>
-          <Text style={styles.nextBtnTxt}>Next</Text>
+          <Text style={styles.nextBtnTxt}>Update Profile</Text>
         </TouchableOpacity>
 
       </View>
@@ -345,6 +553,26 @@ const styles = StyleSheet.create({
     height: 36,
     color: '#666',
     marginTop: -5
+  },
+  textArea: {
+    borderWidth: 1,
+    padding: 8,
+    borderColor: '#DDD',
+    borderRadius: 5,
+    marginTop: 25,
+    placeholderTextColor: '#666',
+    backgroundColor: '#FFF',
+    textAlignVertical: 'top',
+    marginBottom:25
+  },
+  selectBoxBtm: {
+    backgroundColor: '#FFF',
+    borderWidth: 1,
+    borderColor: '#DDD',
+    paddingLeft: 23,
+    borderRadius: 5,
+    height: 42,
+    marginTop: 25
   },
   selectBox: {
     backgroundColor: '#FFF',
@@ -404,16 +632,22 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   loginBtn: {
-    marginTop: 20,
+    marginTop: 30,
     backgroundColor: '#0866A6',
     padding: 8,
     borderRadius: 8,
-    marginBottom: 80,
+    marginBottom: 50,
   },
   uploadBtn: {
-    backgroundColor: '#0866A6',
+    backgroundColor: '#90C8EE',
     padding: 5,
     borderRadius: 8,
+  },
+  btnText: {
+    color: '#FFF',
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold'
   },
 
   genderBtn: {
@@ -428,8 +662,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold'
   },
-  btnText: {
-    color: '#999',
+  genderText:{
+    color: '#333',
     textAlign: 'center',
     fontSize: 15,
   },
@@ -444,4 +678,4 @@ const styles = StyleSheet.create({
     marginBottom: 5
   }
 });
-export default Getstarted;
+export default EditProfile;

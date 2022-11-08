@@ -11,12 +11,10 @@ function TopBar(){
   useEffect(()=>{
     retrieveData();
     setIsOpen(false)
-    console.log('rerender top bar',navigation)
   },[])
 
   useFocusEffect(
     useCallback(() => {;
-      console.log('top focus')
       setIsOpen(false)
     }, [])
 )
@@ -29,7 +27,6 @@ function TopBar(){
     try {
       const value = await AsyncStorage.getItem('user-info');
       if (value !== null) {
-        console.log(typeof(JSON.parse(value).profile_pics));
         setName(JSON.parse(value).full_name);
         setEmail(JSON.parse(value).email_id);
         setProfilePicture(JSON.parse(value).profile_pics);
@@ -165,7 +162,19 @@ function TopBar(){
               </Text>
             </TouchableOpacity>
             <Text style={styles.menuTitle}>Account</Text>
-            <Text style={styles.menuLink}><Image source={require('./../../assets/menu/edit_profile_grey.png')} style={styles.menuIcon} /> Edit Profile</Text>
+
+            <TouchableOpacity onPress={()=>navigation.navigate('Edit Profile')} 
+            style={route.name =='Edit Profile' ? styles.active : styles.menuLink}>
+              <Text style={route.name =='Edit Profile' ? styles.activeLink : styles.linkText}>
+              {
+                  route.name =='Edit Profile' ?
+                  <Image source={require('./../../assets/menu/edit_profile_white.png')} style={styles.menuIcon} />
+                  :
+                  <Image source={require('./../../assets/menu/edit_profile_grey.png')} style={styles.menuIcon} />
+                }
+              Edit Profile
+              </Text>
+            </TouchableOpacity>
             
             <TouchableOpacity onPress={()=>logout()} style={styles.menuLink}>
               <Text style={styles.linkText}>
@@ -175,17 +184,17 @@ function TopBar(){
 
             </TouchableOpacity>
             
-            <TouchableOpacity onPress={()=>navigation.navigate('Change Password')} style={route.name =='Change Password' ? styles.active : styles.menuLink}>
+            <TouchableOpacity onPress={()=>navigation.navigate('Change Password')} 
+            style={route.name =='Change Password' ? styles.active : styles.menuLink}>
               <Text style={route.name =='Change Password' ? styles.activeLink : styles.linkText}>
               {
                   route.name =='Change Password' ?
                   <Image source={require('./../../assets/menu/change_password_white.png')} style={styles.menuIcon} />
                   :
                   <Image source={require('./../../assets/menu/change_password_grey.png')} style={styles.menuIcon} />
-                }
+              }
               Change Password
               </Text>
-
             </TouchableOpacity>
           </View>
         </ScrollView>

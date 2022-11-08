@@ -1,15 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {View, StyleSheet, Text,Image, TextInput, TouchableOpacity} from 'react-native';
+
 function ForgotPassword({navigation}){
     
-    const getPassword = ()=>{
-        
-        //navigation.navigate('Alumni');
-    }
-    
-    const toggleCheckbox = ()=>{
-        setSelection(!isSelected)
-      }
     return(
         <View style={{height:'100%', backgroundColor:'#fafbff'}}>
             <Image source={require('./../../assets/logo.png')} style={styles.midImg} />
@@ -21,7 +14,7 @@ function ForgotPassword({navigation}){
                 <Image source={require('./../../assets/get_started/email_id.png')} 
                 style={{ width: 20, height: 24, marginTop:-35, marginLeft:5 }} />
                 
-                <TouchableOpacity activeOpacity={0.8} style={styles.loginBtn} onPress={()=>getPassword()}>
+                <TouchableOpacity activeOpacity={0.8} style={styles.loginBtn}>
                     <Text style={styles.btnText}>Submit</Text>
                 </TouchableOpacity>
                 <View style={{flexDirection:'row', marginTop:20, textAlign:'center'}}>

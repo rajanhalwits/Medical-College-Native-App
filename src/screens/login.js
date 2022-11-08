@@ -19,7 +19,6 @@ function Login({ navigation }) {
 
     useFocusEffect(
         useCallback(() => {
-            console.log('focus')
             retrieveData()
         }, [])
     )
@@ -30,7 +29,8 @@ function Login({ navigation }) {
             if (value !== null) {
                 navigation.replace('Alumni')
             } else {
-                console.log('not logged in')
+                console.log('not logged in');
+                navigation.replace('MMCH')
             }
         } catch (error) {
             // Error retrieving data
@@ -39,41 +39,32 @@ function Login({ navigation }) {
 
     const userLogin = () => {
         let token = '257341a3-feea-4ba6-96e2-34b698072790';
-        if (userId == '') {
-            setUserNameError('Enter user name*');
-            setPasswordError('')
-        } else if (password == '') {
-            setUserNameError('')
-            setPasswordError('Enter password*')
-        } else {
-            function json(response) {
-                return response.json()
-            }
-            var url = `${apiUrl}login`
-            fetch(url, {
-                method: 'post',
-                headers: {
-                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                    "Authorization": "Bearer " + token
-                },
-                body: "user_name=" + userId + "&password=" + password
-            })
-            .then(json)
-            .then(function (response) {
-                setUserNameError('')
-                setPasswordError('');
-                console.log(response);
-                if (response.status == 'success') {
-                    AsyncStorage.setItem('user-info', JSON.stringify(response.user_list))
-                    navigation.replace('Alumni');
-                } else {
-                    setErrorMsg(response.message)
-                }
-            })
-            .catch(function (error) {
-                console.error(error);
-            });
+        function json(response) {
+            return response.json()
         }
+        var url = `${apiUrl}login`
+        fetch(url, {
+            method: 'post',
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "Authorization": "Bearer " + token
+            },
+            body: "user_name=" + userId + "&password=" + password
+        })
+        .then(json)
+        .then(function (response) {
+            setErrorMsg('');
+            console.log(response);
+            if (response.status == 'success') {
+                AsyncStorage.setItem('user-info', JSON.stringify(response.user_list))
+                navigation.replace('Alumni');
+            } else {
+                setErrorMsg(response.message)
+            }
+        })
+        .catch(function (error) {
+            console.error(error);
+        });
     }
 
     const toggleCheckbox = () => {
@@ -120,7 +111,7 @@ function Login({ navigation }) {
                         </TouchableOpacity>
                     </View>
                     <View style={{ width: '40%' }}>
-                        <Text style={{ color: '#0866A6', textAlign: 'right' }} onPress={() => navigation.navigate('Forgot Password')}>Forgot Password?</Text>
+                        {/* <Text style={{ color: '#0866A6', textAlign: 'right' }} onPress={() => navigation.navigate('Forgot Password')}>Forgot Password?</Text> */}
                     </View>
                 </View>
                 <TouchableOpacity style={styles.loginBtn} onPress={() => userLogin()}>

@@ -4,7 +4,6 @@ import MidContent from "../components/midContent";
 import { useEffect, useState } from "react";
 import { apiUrl } from "../constant";
 import * as FileSystem from 'expo-file-system';
-import * as Camera from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 function JobDetail({ route, navigation }) {
     const { jobId, otherParams } = route.params;

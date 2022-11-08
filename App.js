@@ -23,6 +23,7 @@ import Alumni from './src/screens/alumni';
 import JobDetail from './src/screens/jobDetail';
 import ForgotPassword from './src/screens/forgotPassword';
 import Carousel from './src/screens/carousel';
+import EditProfile from './src/screens/editProfile';
 
 function App() {
   const Stack = createNativeStackNavigator();
@@ -51,6 +52,7 @@ function App() {
           <Stack.Screen name='Alumni Thankyou' component={AlumniThankyou}  options={{ headerShown: false }} />
           <Stack.Screen name='Alumni' component={Alumni}  options={{ headerShown: false }} />
           <Stack.Screen name='Carousel' component={Carousel}  options={{ headerShown: false }} />
+          <Stack.Screen name='Edit Profile' component={EditProfile}  options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
   );

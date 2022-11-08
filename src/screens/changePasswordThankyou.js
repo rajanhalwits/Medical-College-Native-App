@@ -1,13 +1,13 @@
 import TopBar from "./topBar";
 import{View, Text, StyleSheet, Image} from 'react-native'
-function ChangePasswordThankYou({navigation}){
+function ChangePasswordThankYou({route, navigation}){
+    const {msg, otherParam} = route.params;
     return(
         <View style={{backgroundColor:'#FFF', minHeight:'100%'}}>
             <TopBar/>
             <View style={styles.container}>
                 <Image source={require('./../../assets/thank_you.jpeg')} style={styles.thankyouImg} />
-                <Text style={styles.textThanks}>Your Password has been changed</Text>
-                <Text style={styles.textThanks}>Successfully.</Text>
+                <Text style={styles.textThanks}>{msg}</Text>
             </View>
         </View>
     )

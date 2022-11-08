@@ -4,7 +4,6 @@ import MidContent from "../components/midContent";
 import { apiUrl } from "../constant";
 import { useEffect, useState } from "react";
 import * as FileSystem from 'expo-file-system';
-import * as Camera from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 
 function NoticeBoardDetail({route, navigation}){
