@@ -24,6 +24,7 @@ import JobDetail from './src/screens/jobDetail';
 import ForgotPassword from './src/screens/forgotPassword';
 import Carousel from './src/screens/carousel';
 import EditProfile from './src/screens/editProfile';
+import DeleteProfile from './src/screens/deleteProfile';
 
 function App() {
   const Stack = createNativeStackNavigator();
@@ -53,6 +54,7 @@ function App() {
           <Stack.Screen name='Alumni' component={Alumni}  options={{ headerShown: false }} />
           <Stack.Screen name='Carousel' component={Carousel}  options={{ headerShown: false }} />
           <Stack.Screen name='Edit Profile' component={EditProfile}  options={{ headerShown: false }} />
+          <Stack.Screen name='Delete Profile' component={DeleteProfile}  options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
   );

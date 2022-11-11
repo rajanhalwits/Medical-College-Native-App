@@ -120,8 +120,6 @@ function Register({route, navigation }) {
 
   const signup = () => {
     setLoading(true)
-    console.log('rajan ----> ',image);
-    
     var frm = new FormData();
     frm.append('country_id', selectedCountry);
     frm.append('states_id', selectedState);

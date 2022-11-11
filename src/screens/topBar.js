@@ -196,6 +196,18 @@ function TopBar(){
               Change Password
               </Text>
             </TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.navigate('Delete Profile')} 
+            style={route.name =='Delete Profile' ? styles.active : styles.menuLink}>
+              <Text style={route.name =='Delete Profile' ? styles.activeLink : styles.linkText}>
+              {
+                  route.name =='Delete Profile' ?
+                  <Image source={require('./../../assets/menu/delete_white.png')} style={styles.menuIcon} />
+                  :
+                  <Image source={require('./../../assets/menu/delete_grey.png')} style={styles.menuIcon} />
+              }
+              Delete Account
+              </Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
         <TouchableOpacity activeOpacity={1} onPress={()=>setIsOpen(!isOpen)} style={styles.overLay}></TouchableOpacity>

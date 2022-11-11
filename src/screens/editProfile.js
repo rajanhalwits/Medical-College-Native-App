@@ -47,6 +47,7 @@ function EditProfile({ navigation }) {
   const [stateList, setStateData] = useState([]);
   const [cityList, setCityData] = useState([]);
   const [userId, setUserId] = useState('');
+  const [fullPath, setFullPath] = useState('');
 
   useEffect(() => {
     fetchYear();
@@ -278,14 +279,11 @@ const pickImage = async () => {
     if(image.includes('data:image')){
         photo = image;
     }
-    //setImage(photo)
-    console.log('image before update --> ',photo);
-
     function json(response) {
       return response.json()
     }
     var url = `${apiUrl}updateProfile`
-    fetch(url, {
+    fetch(url, { 
       method: 'post',
       headers: {
         "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
@@ -294,16 +292,16 @@ const pickImage = async () => {
         + "&admission_year=" + selectedEntry + "&course_id=" + selectedCourse + "&whatsapp_number=" + whatsApp + 
         "&current_specializatoin=" + specialization + "&user_id=" + userId + "&country_id=" + selectedCountry + 
         "&states_id=" + selectedState + "&city_id=" + selectedCity + "&address=" + address + 
-        "&other_state=" + otherState + "&other_city=" + otherCity + "&profile_pics=" + photo
+        "&other_state=" + otherState + "&other_city=" + otherCity + "&profile_pics=" + image
     })
       .then(json)
       .then(function (response) {
         console.log(response);
-        
+        setFullPath(response.fullpics)
         setLoading(false)
         if (response.status == 'success') {
           AsyncStorage.setItem('user-info', JSON.stringify(response.user_list))
-            navigation.replace('Alumni');
+            //navigation.replace('Alumni');
         } else {
           Alert.alert(response.message);
         }
@@ -311,6 +309,7 @@ const pickImage = async () => {
       .catch(function (error) {
         console.error(error);
       });
+
   }
   const getBatch = (courseId) => {
     fetchBatch(courseId);
@@ -330,7 +329,6 @@ const pickImage = async () => {
       { isLoading ? <Loader /> : null}
       
       <View style={{ paddingLeft: 15, paddingRight: 15}}>
-        
         <Text style={styles.formLabel}>Enter Your Name</Text>
         <TextInput style={styles.input}
           autoCapitalize="none"
@@ -532,7 +530,7 @@ const pickImage = async () => {
             style={{ width: 20, height: 17 }} /> Change Profile Picture</Text>
           </TouchableOpacity>
 
-        
+        <Text selectable={true}>{fullPath}</Text>
         <TouchableOpacity style={styles.loginBtn} onPress={() => registerStepOne()}>
           <Text style={styles.nextBtnTxt}>Update Profile</Text>
         </TouchableOpacity>

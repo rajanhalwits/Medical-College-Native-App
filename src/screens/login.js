@@ -30,7 +30,7 @@ function Login({ navigation }) {
                 navigation.replace('Alumni')
             } else {
                 console.log('not logged in');
-                navigation.replace('MMCH')
+                //navigation.replace('MMCH')
             }
         } catch (error) {
             // Error retrieving data
