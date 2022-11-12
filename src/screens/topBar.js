@@ -40,7 +40,7 @@ function TopBar(){
   const logout = () => {    
     console.log('in logout')
     AsyncStorage.clear();
-    navigation.navigate('MMCH');
+    navigation.replace('MMCH');
   }
   const goTOPrevScreen = () =>{
     if(navigation.canGoBack()){
