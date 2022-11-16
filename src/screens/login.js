@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { View, StyleSheet, Text, Image, TextInput, TouchableOpacity, ScrollView, AsyncStorage } from 'react-native';
+import { View, StyleSheet, Text, Image, TextInput, TouchableOpacity, ScrollView, AsyncStorage, Alert } from 'react-native';
 import Checkbox from 'expo-checkbox';
 import AppLoading from 'expo-app-loading';
 import { useFocusEffect } from '@react-navigation/native';
@@ -12,14 +12,15 @@ function Login({ navigation }) {
     const [errorMsg, setErrorMsg] = useState('');
     const [userNameError, setUserNameError] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [deviceToken, setDeviceToken] = useState('');
 
     if (isLoading) {
         return <AppLoading />
     }
-
     useFocusEffect(
         useCallback(() => {
-            retrieveData()
+            retrieveData();
+            
         }, [])
     )
 
@@ -30,14 +31,26 @@ function Login({ navigation }) {
                 navigation.replace('Alumni')
             } else {
                 console.log('not logged in');
-                //navigation.replace('MMCH')
             }
         } catch (error) {
             // Error retrieving data
         }
     }
-
-    const userLogin = () => {
+    const getToken = async () => {
+        try {
+            const devToken = await AsyncStorage.getItem('DeviceToken');
+            if (devToken !== null) {
+                console.log('token on login screen'+ devToken);
+                userLogin(devToken)
+            }else{
+                userLogin('')
+            }
+        } catch (error) {
+            // Error retrieving data
+        }
+    }
+    const userLogin = (devToken) => {
+        console.log(devToken);
         let token = '257341a3-feea-4ba6-96e2-34b698072790';
         function json(response) {
             return response.json()
@@ -49,7 +62,7 @@ function Login({ navigation }) {
                 "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
                 "Authorization": "Bearer " + token
             },
-            body: "user_name=" + userId + "&password=" + password
+            body: "user_name=" + userId + "&password=" + password + "&device_token=" + devToken
         })
         .then(json)
         .then(function (response) {
@@ -114,7 +127,7 @@ function Login({ navigation }) {
                         {/* <Text style={{ color: '#0866A6', textAlign: 'right' }} onPress={() => navigation.navigate('Forgot Password')}>Forgot Password?</Text> */}
                     </View>
                 </View>
-                <TouchableOpacity style={styles.loginBtn} onPress={() => userLogin()}>
+                <TouchableOpacity style={styles.loginBtn} onPress={() => getToken()}>
                     <Text style={styles.btnText}>Sign In</Text>
                 </TouchableOpacity>
                 <View style={{ flexDirection: 'row', marginTop: 20, textAlign: 'center' }}>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, Image, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, Text, Image, TextInput, TouchableOpacity, ScrollView, Alert, AsyncStorage } from 'react-native';
 import Checkbox from 'expo-checkbox';
 import { Picker } from '@react-native-picker/picker'
 import * as ImagePicker from 'expo-image-picker';
@@ -22,11 +22,24 @@ function Register({route, navigation }) {
   const [cityList, setCityData] = useState([]);
   const [terms, setTerms] = useState(0);
   const [isLoading, setLoading] = useState(true);
-
+  const [deviceToken, setDeviceToken] = useState('')
   useEffect(() => {
     fetchCountry();
-  }, []);
+    retrieveData();
+}, []);
+
+const retrieveData = async () => {
   
+    try {
+        const DeviceToken = await AsyncStorage.getItem('DeviceToken');        
+        if (DeviceToken !== null) {
+            console.log('device token--->', DeviceToken); 
+            setDeviceToken(DeviceToken)
+        }
+    } catch (error) {
+        // Error retrieving data
+    }
+}
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       base64: true,
@@ -130,6 +143,7 @@ function Register({route, navigation }) {
     frm.append('profile_pics', image);
     frm.append('user_id', prevId);
     frm.append('term', terms);
+    frm.append('device_token', deviceToken);
     function json(response) {
       return response.json()
     }
@@ -184,8 +198,6 @@ function Register({route, navigation }) {
             </Picker>
           </View>
           <Image source={require('./../../assets/country.png')} style={styles.inputImg} />
-
-
           {
             selectedCountry == 'IN' || selectedCountry == '' ?
               <View style={styles.selectBox}>
