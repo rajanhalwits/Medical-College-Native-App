@@ -29,16 +29,16 @@ function Register({route, navigation }) {
 }, []);
 
 const retrieveData = async () => {
-  
-    try {
-        const DeviceToken = await AsyncStorage.getItem('DeviceToken');        
-        if (DeviceToken !== null) {
-            console.log('device token--->', DeviceToken); 
-            setDeviceToken(DeviceToken)
-        }
-    } catch (error) {
-        // Error retrieving data
-    }
+  try {
+      const devToken = await AsyncStorage.getItem('DeviceToken');
+      console.log('Rajan---> ',devToken)
+      if (devToken !== null) {
+        console.log('device token--->', devToken); 
+        setDeviceToken(devToken)
+      }
+  } catch (error) {
+      // Error retrieving data
+  }
 }
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -132,7 +132,9 @@ const retrieveData = async () => {
   }
 
   const signup = () => {
-    setLoading(true)
+    setLoading(true);
+    console.log('in signup function ',deviceToken);
+    //Alert.alert('in signup function ',deviceToken)
     var frm = new FormData();
     frm.append('country_id', selectedCountry);
     frm.append('states_id', selectedState);

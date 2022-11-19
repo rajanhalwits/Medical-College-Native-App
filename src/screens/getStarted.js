@@ -72,7 +72,8 @@ function Getstarted({ navigation }) {
     })
       .then(json)
       .then(function (response) {
-        setLoading(false)
+        setLoading(false);
+        console.log(response);
         if (response.status == 'success') {
           setyearData(response.yearList)
         } else {
@@ -112,6 +113,7 @@ function Getstarted({ navigation }) {
     setDate(currentDate);
     let tempDate = new Date(currentDate);
     let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
+    setDate(tempDate.getDate() + '-' + (tempDate.getMonth() + 1) + '-' + tempDate.getFullYear());
     let fTime = 'Hours:' + tempDate.getHours() + ' | Minute:' + tempDate.getMinutes();
     setText(fDate)
   }
@@ -129,6 +131,7 @@ function Getstarted({ navigation }) {
   }
   const registerStepOne = () => {
     let token = '257341a3-feea-4ba6-96e2-34b698072790';
+    console.log('DOB', date);
     setLoading(true)
     function json(response) {
       return response.json()

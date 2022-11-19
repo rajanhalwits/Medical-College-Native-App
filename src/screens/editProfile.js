@@ -4,7 +4,6 @@ import {
   TouchableOpacity, ScrollView, Platform, Pressable, Alert, AsyncStorage, ActivityIndicator
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import Checkbox from 'expo-checkbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { apiUrl } from '../constant';
 import Loader from '../components/loader';
@@ -14,8 +13,6 @@ import * as ImagePicker from 'expo-image-picker';
 
 
 function EditProfile({ navigation }) {
-
-  const [isSelected, setSelection] = useState(false);
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
@@ -47,8 +44,6 @@ function EditProfile({ navigation }) {
   const [stateList, setStateData] = useState([]);
   const [cityList, setCityData] = useState([]);
   const [userId, setUserId] = useState('');
-  const [fullPath, setFullPath] = useState('');
-
   useEffect(() => {
     fetchYear();
     fetchCourse();
@@ -60,11 +55,11 @@ function EditProfile({ navigation }) {
         const value = await AsyncStorage.getItem('user-info');
         if (value !== null) {
             console.log(JSON.parse(value));
-            console.log(new Date());
-            setUserId(JSON.parse(value).user_id);
+            setUserId(JSON.parse(value).signup_aid);
             setName(JSON.parse(value).full_name);
             fromattedDate(new Date(JSON.parse(value).dob));
-            setDate(new Date(JSON.parse(value).dob))
+            console.log('Date-->', new Date(JSON.parse(value).dob))
+            setDate(new Date(JSON.parse(value).dob));
             setGender(JSON.parse(value).gender);
             setSelectedCourse(JSON.parse(value).course_id);
             getBatch(JSON.parse(value).course_id);
@@ -73,7 +68,6 @@ function EditProfile({ navigation }) {
             setSpecialization(JSON.parse(value).current_specializatoin);
             
             setWhatsApp(JSON.parse(value).whatsapp_number);
-            
             
             setSelectedCountry(JSON.parse(value).country_id);
             fetchState(JSON.parse(value).country_id);
@@ -217,7 +211,6 @@ const pickImage = async () => {
       .then(json)
       .then(function (response) {
         setLoading(false);
-        
         if (response.status == 'success') {
           setyearData(response.yearList)
         } else {
@@ -254,17 +247,17 @@ const pickImage = async () => {
   const fromattedDate =(currentDate)=>{
     let tempDate = new Date(currentDate);
     let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
+    //setDate(tempDate.getDate() + '-' + (tempDate.getMonth() + 1) + '-' + tempDate.getFullYear());
     let fTime = 'Hours:' + tempDate.getHours() + ' | Minute:' + tempDate.getMinutes();
     setText(fDate)
   }
   const onChange = (event, selectedDate) => {
-    console.log('test ', selectedDate)
-    console.log('test2 ', selectedDate)
     const currentDate = selectedDate || date;
     setShow(Platform.OS === 'ios');
-    setDate(currentDate);
+    
     let tempDate = new Date(currentDate);
     let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
+    setDate(tempDate);
     let fTime = 'Hours:' + tempDate.getHours() + ' | Minute:' + tempDate.getMinutes();
     setText(fDate)
   }
@@ -273,35 +266,72 @@ const pickImage = async () => {
     setMode(currentMode)
   }
   
+  function sendXmlHttpRequest(data) {
+    const xhr = new XMLHttpRequest();
+  
+    return new Promise((resolve, reject) => {
+      xhr.onreadystatechange = e => {
+        if (xhr.readyState !== 4) {
+          return;
+        }
+  
+        if (xhr.status === 200) {
+          resolve(JSON.parse(xhr.responseText));
+        } else {
+          reject("Request Failed");
+        }
+      };
+      xhr.open("POST", `${apiUrl}updateProfile`);
+      xhr.send(data);
+    });
+  }
+
   const registerStepOne = () => {
-    setLoading(true);
     let photo = '';
-    if(image.includes('data:image')){
+    if(image !=null || image !=''){
+      if(image.includes('data:image')){
         photo = image;
+      }
     }
+    var frm = new FormData();
+    frm.append('full_name', name);
+    console.log('Dob___ ',typeof(date));
+    let customDate = '';
+    customDate = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear()
+    console.log('customDate', customDate)
+    frm.append('dob', customDate);
+    frm.append('gender', gender);
+    frm.append('admissionbatch', selectedBatch);
+    frm.append('admission_year', selectedEntry);
+    frm.append('course_id', selectedCourse);
+    frm.append('whatsapp_number', whatsApp);
+    frm.append('current_specializatoin', specialization);
+    frm.append('user_id', userId);
+    frm.append('country_id', selectedCountry);
+    frm.append('states_id', selectedState);
+    frm.append('city_id', selectedCity);
+    frm.append('address', address);
+    frm.append('other_state', otherState);
+    frm.append('other_city', otherCity);
+    frm.append('profile_pics', photo);
+    
+    setLoading(true);
     function json(response) {
       return response.json()
     }
-    var url = `${apiUrl}updateProfile`
+    var url = `${apiUrl}updateProfile`;
     fetch(url, { 
       method: 'post',
-      headers: {
-        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-      },
-      body: "full_name=" + name + "&dob=" + date + "&gender=" + gender + "&admissionbatch=" + selectedBatch
-        + "&admission_year=" + selectedEntry + "&course_id=" + selectedCourse + "&whatsapp_number=" + whatsApp + 
-        "&current_specializatoin=" + specialization + "&user_id=" + userId + "&country_id=" + selectedCountry + 
-        "&states_id=" + selectedState + "&city_id=" + selectedCity + "&address=" + address + 
-        "&other_state=" + otherState + "&other_city=" + otherCity + "&profile_pics=" + image
+      body: frm
     })
       .then(json)
       .then(function (response) {
         console.log(response);
-        setFullPath(response.fullpics)
         setLoading(false)
-        if (response.status == 'success') {
-          AsyncStorage.setItem('user-info', JSON.stringify(response.user_list))
-            //navigation.replace('Alumni');
+        if(response.status == 'success') {
+            AsyncStorage.setItem('user-info', JSON.stringify(response.user_list))
+            Alert.alert(response.message);
+            navigation.replace('Alumni');
         } else {
           Alert.alert(response.message);
         }
@@ -311,6 +341,7 @@ const pickImage = async () => {
       });
 
   }
+  
   const getBatch = (courseId) => {
     fetchBatch(courseId);
     setSelectedCourse(courseId);
@@ -329,6 +360,7 @@ const pickImage = async () => {
       { isLoading ? <Loader /> : null}
       
       <View style={{ paddingLeft: 15, paddingRight: 15}}>
+        {/* <Text selectable={true}>{image}</Text> */}
         <Text style={styles.formLabel}>Enter Your Name</Text>
         <TextInput style={styles.input}
           autoCapitalize="none"
@@ -529,8 +561,7 @@ const pickImage = async () => {
             <Text style={styles.btnText}><Image source={require('./../../assets/upload.png')} 
             style={{ width: 20, height: 17 }} /> Change Profile Picture</Text>
           </TouchableOpacity>
-
-        <Text selectable={true}>{fullPath}</Text>
+        
         <TouchableOpacity style={styles.loginBtn} onPress={() => registerStepOne()}>
           <Text style={styles.nextBtnTxt}>Update Profile</Text>
         </TouchableOpacity>

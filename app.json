@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "MMCH App",
+    "name": "MMCH Alumni",
     "slug": "mmch",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -18,7 +18,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "mmch.app"
     },
     "plugins": [
       [
@@ -29,8 +30,12 @@
       ]
     ],
     "android": {
-      "permissions":["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"],
-      "versionCode" :4,
+      "permissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "versionCode": 6,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#f49100"
