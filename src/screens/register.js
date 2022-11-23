@@ -5,7 +5,10 @@ import { Picker } from '@react-native-picker/picker'
 import * as ImagePicker from 'expo-image-picker';
 import { apiUrl } from '../constant';
 import Loader from '../components/loader';
-function Register({route, navigation }) {
+
+import { manipulateAsync, FlipType, SaveFormat } from 'expo-image-manipulator';
+
+function Register({ route, navigation }) {
   const { signupId, otherParams } = route.params;
 
   const [isSelected, setSelection] = useState(false);
@@ -26,20 +29,20 @@ function Register({route, navigation }) {
   useEffect(() => {
     fetchCountry();
     retrieveData();
-}, []);
+  }, []);
 
-const retrieveData = async () => {
-  try {
+  const retrieveData = async () => {
+    try {
       const devToken = await AsyncStorage.getItem('DeviceToken');
-      console.log('Rajan---> ',devToken)
+      console.log('Rajan---> ', devToken)
       if (devToken !== null) {
-        console.log('device token--->', devToken); 
+        console.log('device token--->', devToken);
         setDeviceToken(devToken)
       }
-  } catch (error) {
+    } catch (error) {
       // Error retrieving data
+    }
   }
-}
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       base64: true,
@@ -50,9 +53,35 @@ const retrieveData = async () => {
     });
 
     if (!result.cancelled) {
-      setImage('data:image/jpeg;base64,' + result.base64); 
+      compress('data:image/jpeg;base64,' + result.base64);
     }
   };
+  const pickCamera = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      base64: true,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1
+    });
+
+    if (!result.cancelled) {
+
+      compress('data:image/jpeg;base64,' + result.base64);
+    }
+  };
+  const compress = async (image) => {
+    const manipResult = await manipulateAsync(
+      image,
+      [
+        { resize: { height: 300, width: 300 } }
+
+      ],
+      { compress: 1, format: SaveFormat.JPEG, base64: true }
+    );
+    //console.log(manipResult);
+    setImage('data:image/jpeg;base64,' + manipResult.base64);
+  }
   const fetchCountry = () => {
     function json(response) {
       return response.json()
@@ -69,7 +98,7 @@ const retrieveData = async () => {
         setLoading(false)
         if (response.status == 'success') {
           setCountryData(response.countryList)
-        }else{
+        } else {
           console.log(response);
         }
       })
@@ -133,7 +162,7 @@ const retrieveData = async () => {
 
   const signup = () => {
     setLoading(true);
-    console.log('in signup function ',deviceToken);
+    console.log('in signup function ', deviceToken);
     //Alert.alert('in signup function ',deviceToken)
     var frm = new FormData();
     frm.append('country_id', selectedCountry);
@@ -159,7 +188,7 @@ const retrieveData = async () => {
         console.log(response);
         setLoading(false)
         Alert.alert(response.message);
-        if(response.status =='success'){
+        if (response.status == 'success') {
           navigation.replace('MMCH')
         }
       })
@@ -178,7 +207,7 @@ const retrieveData = async () => {
   }
   return (
     <ScrollView contentContainerStyle={styles.parent}>
-      {isLoading ? <Loader/> : null}
+      {isLoading ? <Loader /> : null}
       <View>
         <Image source={require('./../../assets/logo.png')} style={styles.midImg} />
         <Text style={styles.midTitle}>Complete Your Registration</Text>
@@ -265,10 +294,20 @@ const retrieveData = async () => {
               image && <Image source={{ uri: image }} style={{ width: 200, height: 200, marginBottom: 5 }} />
             }
           </View>
-          <TouchableOpacity activeOpacity={0.8} style={styles.uploadBtn} onPress={pickImage}>
-            <Text style={styles.btnText}><Image source={require('./../../assets/upload.png')} style={{ width: 20, height: 17 }} /> Upload Profile Picture</Text>
-          </TouchableOpacity>
-
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ width: '49.5%' }}>
+              <TouchableOpacity activeOpacity={0.8} style={styles.uploadBtn} onPress={pickImage}>
+                <Text style={styles.btnText}><Image source={require('./../../assets/image-gallery.png')}
+                  style={{ width: 20, height: 17 }} /> Gallery</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{ width: '49.5%', marginLeft: '1%' }}>
+              <TouchableOpacity activeOpacity={0.8} style={styles.uploadBtn} onPress={pickCamera}>
+                <Text style={styles.btnText}><Image source={require('./../../assets/add-camera.png')}
+                  style={{ width: 20, height: 17 }} /> Camera</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
           <TouchableOpacity activeOpacity={0.8} style={styles.loginBtn} onPress={() => signup()}>
             <Text style={styles.btnText}>Create</Text>
           </TouchableOpacity>

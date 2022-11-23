@@ -1,6 +1,6 @@
 import TopBar from "./topBar";
 import{View, Text, StyleSheet, Image, Alert, FlatList, TouchableOpacity} from 'react-native';
-import MidContent from "../components/midContent";
+import FlatListHeader from "../components/flatListHeader";
 import { useEffect, useRef, useState } from "react";
 import { apiUrl } from "../constant";
 function GalleryDetail({route, navigation}){
@@ -43,19 +43,17 @@ function GalleryDetail({route, navigation}){
             <Text>Loading...</Text>
         )
     }
-    return(
-        
-        <View contentContainerStyle={styles.parent}>
-        <TopBar/>
-        <MidContent title={
-            {
-                img: '',
-                heading : 'Gallery',
-                subHeading :''
-            }
-        } />
-            
-            <View style={styles.container}>
+    const UpperSection = () =>{
+        return(
+            <View>
+                <FlatListHeader  title={
+                    {
+                        img: '',
+                        heading : 'Gallery',
+                        subHeading :''
+                    }
+                }
+                />
                 <View style={styles.card}>
                     <View style={{flexDirection:'row'}}>
                         <View style={{width:'74%'}}>
@@ -74,12 +72,21 @@ function GalleryDetail({route, navigation}){
                         </Text>
                     </View>
                 </View>
-                <View>
-                <FlatList
+            </View>
+        )
+        
+    }
+    return(
+        
+        <View contentContainerStyle={styles.parent}>
+            <TopBar/>
+                <View style={styles.container}>
+                    <FlatList
                     data={galleryData}
                     numColumns={3}
-                    style={{height:'81%'}}
+                    style={{ height: '89%', marginTop:72}}
                     keyExtractor={(item, index) => index.toString()}
+                    ListHeaderComponent={()=><UpperSection />}
                     renderItem={({ item }) => (
                         <TouchableOpacity style={{marginTop:10, width:'32%', marginRight:'0.8%'}} activeOpacity={0.8}
                             onPress={()=>navigation.navigate('Carousel', 
@@ -89,18 +96,18 @@ function GalleryDetail({route, navigation}){
                                 }
                             )}
                         >
-                            <Image source={{uri: item.image}} style={{width:'100%', height:150,}} />
+                        <Image source={{uri: item.image}} style={{width:'100%', height:150,}} />
                         </TouchableOpacity>
                     )}
                 />
-                </View>
             </View>
         </View>
     )
 }
 const styles = StyleSheet.create({
     container:{
-        padding:10,
+        paddingLeft:10,
+        paddingRight:10
     },
     parent:{
         backgroundColor:'#fafbff',

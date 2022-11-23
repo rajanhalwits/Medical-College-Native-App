@@ -118,13 +118,13 @@ function Login({ navigation }) {
                 }
                 <View style={{ flexDirection: 'row', marginTop: 25, marginBottom: 20 }}>
                     <View style={{ width: '60%', flexDirection: 'row' }}>
-                        <Checkbox value={isSelected} style={{ alignSelf: 'center' }} onValueChange={toggleCheckbox} />
+                        {/* <Checkbox value={isSelected} style={{ alignSelf: 'center' }} onValueChange={toggleCheckbox} />
                         <TouchableOpacity activeOpacity={0.8} onPress={toggleCheckbox}>
                             <Text style={{ color: '#666', paddingLeft: 5 }}> Remember Me</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                     <View style={{ width: '40%' }}>
-                        {/* <Text style={{ color: '#0866A6', textAlign: 'right' }} onPress={() => navigation.navigate('Forgot Password')}>Forgot Password?</Text> */}
+                        <Text style={{ color: '#0866A6', textAlign: 'right' }} onPress={() => navigation.navigate('Forgot Password')}>Forgot Password?</Text>
                     </View>
                 </View>
                 <TouchableOpacity style={styles.loginBtn} onPress={() => getToken()}>

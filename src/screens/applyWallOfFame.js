@@ -67,7 +67,7 @@ function ApplyWallOfFame({ navigation }) {
                     </View>
                     <View style={{ width: '80%', justifyContent: 'center' }}>
                         <Text style={{ fontWeight: 'bold', color: '#666', textTransform: 'capitalize' }}>{userData.full_name}</Text>
-                        <Text style={{ color: '#999' }}>Batch: ({userData.batch_name})</Text>
+                        <Text style={{ color: '#999' }}>{userData.course} ({userData.batch_name})</Text>
                         <Text style={{ color: '#999' }}>{userData.current_specializatoin}</Text>
                     </View>
                 </View>

@@ -14,7 +14,7 @@ function Loader(){
 const styles = StyleSheet.create({
     darkBg: {
         position:'absolute', 
-        backgroundColor:'rgba(0,0,0,0.9)', 
+        backgroundColor:'rgba(0,0,0,0.7)', 
         width:'100%', zIndex:9, 
         height:'100%'
     },

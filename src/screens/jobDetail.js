@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { apiUrl } from "../constant";
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
+import FlatListHeader from "../components/flatListHeader";
 function JobDetail({ route, navigation }) {
     const { jobId, otherParams } = route.params;
     const [jobData, setJobData] = useState([]);
@@ -88,14 +89,15 @@ function JobDetail({ route, navigation }) {
     return (
         <View contentContainerStyle={styles.parent}>
             <TopBar />
-            <MidContent title={
+            
+            <ScrollView style={styles.detailBox}>
+            <FlatListHeader title={
                 {
                     img: require('./../../assets/notice_board.png'),
                     heading: 'Job Description',
                     subHeading: ''
                 }
             } />
-            <ScrollView style={styles.detailBox}>
                 <View style={styles.postBox}>
                     <View style={{ width: '100%' }}>
                         <View style={{ width: '100%' }}>
@@ -167,7 +169,8 @@ const styles = StyleSheet.create({
     detailBox:{ 
         paddingLeft: 15, 
         paddingRight: 15,
-        maxHeight:'72%',
+        maxHeight:'88%',
+        marginTop:72
     },
 
     parent: {

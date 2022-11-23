@@ -1,8 +1,8 @@
 import TopBar from "./topBar";
 import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, ScrollView } from 'react-native'
-import MidContent from "../components/midContent";
 import { useEffect, useState } from "react";
 import { apiUrl } from "../constant";
+import FlatListHeader from "../components/flatListHeader";
 function WallOfFame({ navigation }) {
     const [fameData, setFameData] = useState([]);
     useEffect(() => {
@@ -30,27 +30,33 @@ function WallOfFame({ navigation }) {
                 console.error(error);
             });
     }
+    const UpperSection = () =>{
+        return(
+            <View>
+                <FlatListHeader title={
+                    {
+                        img: require('./../../assets/wall_of_fame/wall_of_fame.png'),
+                        heading: 'Wall of Fame',
+                        subHeading: "Exciting News!! We have launched Wall of Fame exclusively for our Alumni's. \n Share your achievement's with us and get a chance to be highlighted in the Wall of Fame."
+                    }
+                } />
+                <TouchableOpacity style={styles.blueBtn} onPress={() => navigation.navigate('Apply Wall Of Fame')}>
+                <Text style={styles.btnText}>Apply Now</Text>
+            </TouchableOpacity>
+            </View>
+        )
+    }
     return (
         <View contentContainerStyle={styles.parent}>
             <TopBar />
-            <MidContent title={
-                {
-                    img: require('./../../assets/wall_of_fame/wall_of_fame.png'),
-                    heading: 'Wall of Fame',
-                    subHeading: "Exciting News!! We have launched Wall of Fame exclusively for our Alumni's. \n Share your achievement's with us and get a chance to be highlighted in the Wall of Fame."
-                }
-            } />
             <View style={{ paddingLeft: 15, paddingRight: 15 }}>
-                <TouchableOpacity style={styles.blueBtn} onPress={() => navigation.navigate('Apply Wall Of Fame')}>
-                    <Text style={styles.btnText}>Apply Now</Text>
-                </TouchableOpacity>
-
                 <FlatList
                     data={fameData}
                     numColumns={1}
                     keyExtractor={(item, index) => index.toString()}
-                    style={{ height: '72%' }}
+                    style={{ height: '89%', marginTop:72}}
                     showsVerticalScrollIndicator={false}
+                    ListHeaderComponent={()=><UpperSection/>}
                     renderItem={({ item }) => (
                         <View style={styles.postBox}>
                             <View style={{ width: '20%'}}>
@@ -58,7 +64,7 @@ function WallOfFame({ navigation }) {
                             </View>
                             <View style={{ width: '80%', justifyContent: 'center' }}>
                                 <Text style={{ fontWeight: 'bold' }}>{item.full_name}</Text>
-                                <Text style={{ color: '#999' }}>Batch: ({item.batch_name})</Text>
+                                <Text style={{ color: '#999' }}>{item.course} ({item.batch_name})</Text>
                                 <Text style={{ color: '#999' }}>{item.current_specializatoin}</Text>
                             </View>
                         </View>

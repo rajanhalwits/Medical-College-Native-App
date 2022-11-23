@@ -3,6 +3,7 @@ import{View, Text, StyleSheet, Image, ScrollView, Pressable, FlatList} from 'rea
 import MidContent from "../components/midContent";
 import { useState, useEffect } from "react";
 import { apiUrl } from "../constant";
+import FlatListHeader from "../components/flatListHeader";
 function WeAreHiring({navigation}){
     const [jobList, setJobData ] = useState([]);
     useEffect(()=>{
@@ -35,21 +36,22 @@ function WeAreHiring({navigation}){
     return(
         <View contentContainerStyle={styles.parent}>
             <TopBar/>
-            <MidContent title={
-                {
-                    img: require('./../../assets/we_are_hiring.png'),
-                    heading : 'We Are Hiring',
-                    subHeading :''
-                }
-            } />
-            <View style={{padding:10}}>
+            
+            <View style={{paddingLeft:10, paddingRight:10}}>
                 {
                     <FlatList
                         data={jobList}
                         numColumns={1}
                         keyExtractor={(item, index) => index.toString()}
-                        style={{height:'72%'}}
+                        style={{height: '89%', marginTop:72, backgroundColor:'pink'}}
                         showsVerticalScrollIndicator={false} 
+                        ListHeaderComponent={()=><FlatListHeader title={
+                            {
+                                img: require('./../../assets/we_are_hiring.png'),
+                                heading : 'We Are Hiring',
+                                subHeading :''
+                            }
+                        } />}
                         renderItem={({ item }) => (
                         <Pressable style={styles.postBox} onPress={()=>navigation.navigate('JobDetail',{jobId: item.id})}>
                             <View style={{width:'95%'}}>

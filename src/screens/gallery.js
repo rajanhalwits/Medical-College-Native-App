@@ -3,6 +3,7 @@ import{View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, FlatList, Al
 import MidContent from "../components/midContent";
 import { apiUrl } from "../constant";
 import { useEffect, useState } from "react";
+import FlatListHeader from "../components/flatListHeader";
 
 function Gallery({navigation}){
     const [galleryList, setGalleryData] = useState([]);
@@ -36,19 +37,20 @@ function Gallery({navigation}){
     return(
         <View contentContainerStyle={styles.parent}>
         <TopBar/>
-        <MidContent title={
-            {
-                img: '',
-                heading : 'Gallery',
-                subHeading :''
-            }
-        }  />
-            <View style={{padding:10}}>
+        
+            <View style={{paddingLeft:10, paddingRight:10}}>
                 <FlatList
                     data={galleryList}
-                    style={{height:'84%'}}
+                    style={{ height: '89%', marginTop:72}}
                     showsVerticalScrollIndicator={false} 
                     numColumns={2}
+                    ListHeaderComponent={()=><FlatListHeader title={
+                        {
+                            img: '',
+                            heading : 'Gallery',
+                            subHeading :''
+                        }
+                    } />}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
                     <TouchableOpacity activeOpacity={0.8} style={styles.card} 

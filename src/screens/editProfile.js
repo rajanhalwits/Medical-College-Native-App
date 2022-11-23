@@ -10,6 +10,7 @@ import Loader from '../components/loader';
 import TopBar from './topBar';
 import MidContent from '../components/midContent';
 import * as ImagePicker from 'expo-image-picker';
+import { manipulateAsync, FlipType, SaveFormat } from 'expo-image-manipulator';
 
 
 function EditProfile({ navigation }) {
@@ -25,7 +26,7 @@ function EditProfile({ navigation }) {
   const [selectedEntry, setSelectedEntry] = useState('');
   const [selectedCourse, setSelectedCourse] = useState('');
   const [whatsApp, setWhatsApp] = useState('');
-  
+
   const [batchList, setBatchData] = useState([]);
   const [yearList, setyearData] = useState([]);
   const [courseList, setCourseData] = useState([]);
@@ -39,7 +40,7 @@ function EditProfile({ navigation }) {
   const [otherCity, setOtherCity] = useState('');
   const [image, setImage] = useState('');
   const [address, setAddress] = useState('');
-  
+
   const [countryList, setCountryData] = useState([]);
   const [stateList, setStateData] = useState([]);
   const [cityList, setCityData] = useState([]);
@@ -52,50 +53,75 @@ function EditProfile({ navigation }) {
   }, []);
   const retrieveData = async () => {
     try {
-        const value = await AsyncStorage.getItem('user-info');
-        if (value !== null) {
-            console.log(JSON.parse(value));
-            setUserId(JSON.parse(value).signup_aid);
-            setName(JSON.parse(value).full_name);
-            fromattedDate(new Date(JSON.parse(value).dob));
-            console.log('Date-->', new Date(JSON.parse(value).dob))
-            setDate(new Date(JSON.parse(value).dob));
-            setGender(JSON.parse(value).gender);
-            setSelectedCourse(JSON.parse(value).course_id);
-            getBatch(JSON.parse(value).course_id);
-            setSelectedBatch(JSON.parse(value).admissionbatch)
-            setSelectedEntry(JSON.parse(value).admission_year);
-            setSpecialization(JSON.parse(value).current_specializatoin);
-            
-            setWhatsApp(JSON.parse(value).whatsapp_number);
-            
-            setSelectedCountry(JSON.parse(value).country_id);
-            fetchState(JSON.parse(value).country_id);
-            setSelectedState(JSON.parse(value).states_id);
-            fetchCity(JSON.parse(value).states_id);
-            setSelectedCity(JSON.parse(value).city_id)
-            setOtherState(JSON.parse(value).other_state);
-            setOtherCity(JSON.parse(value).other_city);
-            setAddress(JSON.parse(value).address);
-            setImage(JSON.parse(value).profile_pics)
-        }
+      const value = await AsyncStorage.getItem('user-info');
+      if (value !== null) {
+        setUserId(JSON.parse(value).signup_aid);
+        setName(JSON.parse(value).full_name);
+        fromattedDate(new Date(JSON.parse(value).dob));
+        setDate(new Date(JSON.parse(value).dob));
+        setGender(JSON.parse(value).gender);
+        setSelectedCourse(JSON.parse(value).course_id);
+        getBatch(JSON.parse(value).course_id);
+        setSelectedBatch(JSON.parse(value).admissionbatch)
+        setSelectedEntry(JSON.parse(value).admission_year);
+        setSpecialization(JSON.parse(value).current_specializatoin);
+
+        setWhatsApp(JSON.parse(value).whatsapp_number);
+
+        setSelectedCountry(JSON.parse(value).country_id);
+        fetchState(JSON.parse(value).country_id);
+        setSelectedState(JSON.parse(value).states_id);
+        fetchCity(JSON.parse(value).states_id);
+        setSelectedCity(JSON.parse(value).city_id)
+        setOtherState(JSON.parse(value).other_state);
+        setOtherCity(JSON.parse(value).other_city);
+        setAddress(JSON.parse(value).address);
+        setImage(JSON.parse(value).profile_pics)
+      }
     } catch (error) {
-        // Error retrieving data
+      // Error retrieving data
     }
-}
-const pickImage = async () => {
+  }
+  const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       base64: true,
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 4],
-      quality: 1,
+      quality: 1
     });
 
     if (!result.cancelled) {
-      setImage('data:image/jpeg;base64,' + result.base64); 
+
+      compress('data:image/jpeg;base64,' + result.base64);
     }
   };
+  const pickCamera = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      base64: true,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1
+    });
+
+    if (!result.cancelled) {
+
+      compress('data:image/jpeg;base64,' + result.base64);
+    }
+  };
+  const compress = async (image) => {
+    const manipResult = await manipulateAsync(
+      image,
+      [
+        { resize: { height: 300, width: 300 } }
+
+      ],
+      { compress: 1, format: SaveFormat.JPEG, base64: true }
+    );
+    //console.log(manipResult);
+    setImage('data:image/jpeg;base64,' + manipResult.base64);
+  }
   const fetchCountry = () => {
     function json(response) {
       return response.json()
@@ -112,7 +138,7 @@ const pickImage = async () => {
         setLoading(false)
         if (response.status == 'success') {
           setCountryData(response.countryList)
-        }else{
+        } else {
           console.log(response);
         }
       })
@@ -244,7 +270,7 @@ const pickImage = async () => {
         console.error(error);
       });
   }
-  const fromattedDate =(currentDate)=>{
+  const fromattedDate = (currentDate) => {
     let tempDate = new Date(currentDate);
     let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
     //setDate(tempDate.getDate() + '-' + (tempDate.getMonth() + 1) + '-' + tempDate.getFullYear());
@@ -254,7 +280,7 @@ const pickImage = async () => {
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === 'ios');
-    
+
     let tempDate = new Date(currentDate);
     let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
     setDate(tempDate);
@@ -265,40 +291,21 @@ const pickImage = async () => {
     setShow(true)
     setMode(currentMode)
   }
-  
-  function sendXmlHttpRequest(data) {
-    const xhr = new XMLHttpRequest();
-  
-    return new Promise((resolve, reject) => {
-      xhr.onreadystatechange = e => {
-        if (xhr.readyState !== 4) {
-          return;
-        }
-  
-        if (xhr.status === 200) {
-          resolve(JSON.parse(xhr.responseText));
-        } else {
-          reject("Request Failed");
-        }
-      };
-      xhr.open("POST", `${apiUrl}updateProfile`);
-      xhr.send(data);
-    });
-  }
+
 
   const registerStepOne = () => {
     let photo = '';
-    if(image !=null || image !=''){
-      if(image.includes('data:image')){
+    if (image != null || image != '') {
+      if (image.includes('data:image')) {
         photo = image;
       }
     }
     var frm = new FormData();
     frm.append('full_name', name);
-    console.log('Dob___ ',typeof(date));
+    //console.log('Dob___ ',typeof(date));
     let customDate = '';
     customDate = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear()
-    console.log('customDate', customDate)
+    //console.log('customDate', customDate)
     frm.append('dob', customDate);
     frm.append('gender', gender);
     frm.append('admissionbatch', selectedBatch);
@@ -314,13 +321,13 @@ const pickImage = async () => {
     frm.append('other_state', otherState);
     frm.append('other_city', otherCity);
     frm.append('profile_pics', photo);
-    
+
     setLoading(true);
     function json(response) {
       return response.json()
     }
     var url = `${apiUrl}updateProfile`;
-    fetch(url, { 
+    fetch(url, {
       method: 'post',
       body: frm
     })
@@ -328,10 +335,10 @@ const pickImage = async () => {
       .then(function (response) {
         console.log(response);
         setLoading(false)
-        if(response.status == 'success') {
-            AsyncStorage.setItem('user-info', JSON.stringify(response.user_list))
-            Alert.alert(response.message);
-            navigation.replace('Alumni');
+        if (response.status == 'success') {
+          AsyncStorage.setItem('user-info', JSON.stringify(response.user_list))
+          Alert.alert(response.message);
+          navigation.replace('Alumni');
         } else {
           Alert.alert(response.message);
         }
@@ -341,25 +348,25 @@ const pickImage = async () => {
       });
 
   }
-  
+
   const getBatch = (courseId) => {
     fetchBatch(courseId);
     setSelectedCourse(courseId);
   }
   return (
-    
+
     <ScrollView style={{ backgroundColor: '#FAFBFF' }}>
-        <TopBar/>
+      <TopBar />
       <MidContent title={
-            {
-                img: require('./../../assets/change_password.png'),
-                heading : 'Edit Profile',
-                subHeading :''
-            }
-        }  />
-      { isLoading ? <Loader /> : null}
-      
-      <View style={{ paddingLeft: 15, paddingRight: 15}}>
+        {
+          img: require('./../../assets/change_password.png'),
+          heading: 'Edit Profile',
+          subHeading: ''
+        }
+      } />
+      {isLoading ? <Loader /> : null}
+
+      <View style={{ paddingLeft: 15, paddingRight: 15 }}>
         {/* <Text selectable={true}>{image}</Text> */}
         <Text style={styles.formLabel}>Enter Your Name</Text>
         <TextInput style={styles.input}
@@ -480,88 +487,97 @@ const pickImage = async () => {
           value={whatsApp} />
 
         <Image source={require(`./../../assets/get_started/whatsapp.png`)} style={styles.inputImg} />
-        
-        
+
+
         <View style={styles.selectBoxBtm}>
-            <Picker selectedValue={selectedCountry} style={styles.pickerItem}
-              onValueChange={(itemValue) =>
-                fetchState(itemValue)
-              }>
-              <Picker.Item label='Select Country' value='' />
-              {
-                countryList.length > 0 ?
-                  countryList.map((country) =>
-                    <Picker.Item label={country.name} value={country.code} key={country.code} />
-                  )
-                  : null
-              }
-            </Picker>
-          </View>
-          <Image source={require('./../../assets/country.png')} style={styles.inputImg} />
-
-
-          {
-            selectedCountry == 'IN' || selectedCountry == '' ?
-              <View style={styles.selectBoxBtm}>
-                <Picker selectedValue={selectedState} style={styles.pickerItem}
-                  onValueChange={(itemValue) =>
-                    fetchCity(itemValue)
-                  }>
-                  <Picker.Item label='Select State' value='' />
-                  {
-                    stateList.length > 0 ?
-                      stateList.map((state) =>
-                        <Picker.Item label={state.name} value={state.id} key={state.name} />
-                      )
-                      : null
-                  }
-                </Picker>
-              </View>
-              :
-              <TextInput style={styles.input} autoCapitalize="none" autoCorrect={false} placeholder='Enter State'
-                onChangeText={(otrState) => setOtherState(otrState)} value={otherState} />
-          }
-          <Image source={require('./../../assets/state.png')} style={styles.inputImg} />
-          {
-            selectedCountry == 'IN' || selectedCountry == '' ?
-              <View style={styles.selectBoxBtm}>
-                <Picker selectedValue={selectedCity} style={styles.pickerItem}
-                  onValueChange={(itemValue) =>
-                    setSelectedCity(itemValue)
-                  }>
-                  <Picker.Item label='Select City' value='' />
-                  {
-                    cityList.length > 0 ?
-                      cityList.map((city) =>
-                        <Picker.Item label={city.name} value={city.id} key={city.name} />
-                      )
-                      : null
-                  }
-                </Picker>
-              </View>
-              :
-              <TextInput style={styles.input} autoCapitalize="none" autoCorrect={false} placeholder='Enter City'
-                onChangeText={(otrCity) => setOtherCity(otrCity)} value={otherCity} />
-          }
-
-          <Image source={require('./../../assets/country.png')} style={styles.inputImg} />
-          <TextInput style={styles.textArea} placeholder='Enter Address'
-            multiline={true}
-            numberOfLines={4}
-            onChangeText={(add) => setAddress(add)}
-            value={address}
-          />
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-
+          <Picker selectedValue={selectedCountry} style={styles.pickerItem}
+            onValueChange={(itemValue) =>
+              fetchState(itemValue)
+            }>
+            <Picker.Item label='Select Country' value='' />
             {
-              image && <Image source={{ uri: image }} style={{ width: 200, height: 200, marginBottom: 5 }} />
+              countryList.length > 0 ?
+                countryList.map((country) =>
+                  <Picker.Item label={country.name} value={country.code} key={country.code} />
+                )
+                : null
             }
+          </Picker>
+        </View>
+        <Image source={require('./../../assets/country.png')} style={styles.inputImg} />
+
+
+        {
+          selectedCountry == 'IN' || selectedCountry == '' ?
+            <View style={styles.selectBoxBtm}>
+              <Picker selectedValue={selectedState} style={styles.pickerItem}
+                onValueChange={(itemValue) =>
+                  fetchCity(itemValue)
+                }>
+                <Picker.Item label='Select State' value='' />
+                {
+                  stateList.length > 0 ?
+                    stateList.map((state) =>
+                      <Picker.Item label={state.name} value={state.id} key={state.name} />
+                    )
+                    : null
+                }
+              </Picker>
+            </View>
+            :
+            <TextInput style={styles.input} autoCapitalize="none" autoCorrect={false} placeholder='Enter State'
+              onChangeText={(otrState) => setOtherState(otrState)} value={otherState} />
+        }
+        <Image source={require('./../../assets/state.png')} style={styles.inputImg} />
+        {
+          selectedCountry == 'IN' || selectedCountry == '' ?
+            <View style={styles.selectBoxBtm}>
+              <Picker selectedValue={selectedCity} style={styles.pickerItem}
+                onValueChange={(itemValue) =>
+                  setSelectedCity(itemValue)
+                }>
+                <Picker.Item label='Select City' value='' />
+                {
+                  cityList.length > 0 ?
+                    cityList.map((city) =>
+                      <Picker.Item label={city.name} value={city.id} key={city.name} />
+                    )
+                    : null
+                }
+              </Picker>
+            </View>
+            :
+            <TextInput style={styles.input} autoCapitalize="none" autoCorrect={false} placeholder='Enter City'
+              onChangeText={(otrCity) => setOtherCity(otrCity)} value={otherCity} />
+        }
+
+        <Image source={require('./../../assets/country.png')} style={styles.inputImg} />
+        <TextInput style={styles.textArea} placeholder='Enter Address'
+          multiline={true}
+          numberOfLines={4}
+          onChangeText={(add) => setAddress(add)}
+          value={address}
+        />
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+
+          {
+            image && <Image source={{ uri: image }} style={{ width: 200, height: 200, marginBottom: 5 }} />
+          }
+        </View>
+        <View style={{ flexDirection: 'row' }}>
+          <View style={{ width: '49.5%' }}>
+            <TouchableOpacity activeOpacity={0.8} style={styles.uploadBtn} onPress={pickImage}>
+              <Text style={styles.btnText}><Image source={require('./../../assets/image-gallery.png')}
+                style={{ width: 20, height: 17 }} /> Gallery</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity activeOpacity={0.8} style={styles.uploadBtn} onPress={pickImage}>
-            <Text style={styles.btnText}><Image source={require('./../../assets/upload.png')} 
-            style={{ width: 20, height: 17 }} /> Change Profile Picture</Text>
-          </TouchableOpacity>
-        
+          <View style={{ width: '49.5%', marginLeft: '1%' }}>
+            <TouchableOpacity activeOpacity={0.8} style={styles.uploadBtn} onPress={pickCamera}>
+              <Text style={styles.btnText}><Image source={require('./../../assets/add-camera.png')}
+                style={{ width: 20, height: 17 }} /> Camera</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
         <TouchableOpacity style={styles.loginBtn} onPress={() => registerStepOne()}>
           <Text style={styles.nextBtnTxt}>Update Profile</Text>
         </TouchableOpacity>
@@ -592,7 +608,7 @@ const styles = StyleSheet.create({
     placeholderTextColor: '#666',
     backgroundColor: '#FFF',
     textAlignVertical: 'top',
-    marginBottom:25
+    marginBottom: 25
   },
   selectBoxBtm: {
     backgroundColor: '#FFF',
@@ -691,7 +707,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold'
   },
-  genderText:{
+  genderText: {
     color: '#333',
     textAlign: 'center',
     fontSize: 15,

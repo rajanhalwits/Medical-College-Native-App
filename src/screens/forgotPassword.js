@@ -1,8 +1,34 @@
-import { useEffect, useState } from 'react';
-import {View, StyleSheet, Text,Image, TextInput, TouchableOpacity} from 'react-native';
+import { useState } from 'react';
+import {View, StyleSheet, Text,Image, TextInput, TouchableOpacity, Alert} from 'react-native';
+import { apiUrl } from '../constant';
 
 function ForgotPassword({navigation}){
-    
+    const [email, setEmail] = useState('');
+    const getPassword =()=>{
+        
+        function json(response) {
+            return response.json()
+        }
+        var url = `${apiUrl}Forgetpassword`
+        fetch(url, {
+            method: 'post',
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+            },
+            body: "user_name=" + email
+        })
+            .then(json)
+            .then(function (response) {
+                console.log(response);
+                Alert.alert(response.message)
+                if(response.status =='success'){
+                    navigation.replace('MMCH')
+                }
+            })
+            .catch(function (error) {
+                console.error(error);
+            });
+    }
     return(
         <View style={{height:'100%', backgroundColor:'#fafbff'}}>
             <Image source={require('./../../assets/logo.png')} style={styles.midImg} />
@@ -10,12 +36,14 @@ function ForgotPassword({navigation}){
             <Text style={styles.midSubTitle}>Enter email to get password</Text>
             
             <View style={{paddingLeft:15, paddingRight:15, marginTop:10}}>
-                <TextInput style={styles.input} autoCapitalize="none" autoCorrect={false} placeholder="Enter Email ID" />
+                <TextInput style={styles.input} autoCapitalize="none" autoCorrect={false} 
+                placeholder="Enter Email ID"
+                onChangeText={(query)=>setEmail(query)} value={email} />
                 <Image source={require('./../../assets/get_started/email_id.png')} 
                 style={{ width: 20, height: 24, marginTop:-35, marginLeft:5 }} />
                 
-                <TouchableOpacity activeOpacity={0.8} style={styles.loginBtn}>
-                    <Text style={styles.btnText}>Submit</Text>
+                <TouchableOpacity activeOpacity={0.8} style={styles.loginBtn} onPress={()=>getPassword()}>
+                    <Text style={styles.btnText}>Get Password</Text>
                 </TouchableOpacity>
                 <View style={{flexDirection:'row', marginTop:20, textAlign:'center'}}>
                     <Text style={{color:'#333'}}> Back to</Text>

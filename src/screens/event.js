@@ -3,6 +3,7 @@ import{View, Text, StyleSheet, Image, FlatList, Alert} from 'react-native'
 import MidContent from "../components/midContent";
 import { useEffect, useState } from "react";
 import { apiUrl, imagePath } from "../constant";
+import FlatListHeader from "../components/flatListHeader";
 
 function Event({navigation}){
     const [eventList, setEventData] = useState([]);
@@ -36,13 +37,6 @@ function Event({navigation}){
     return(
         <View style={{backgroundColor:'#fafbff', minHeight:'100%'}}>
             <TopBar/>
-            <MidContent title={
-            {
-                img: require('./../../assets/event_icon.png'),
-                heading : 'Event',
-                subHeading :''
-            }
-        }  />
             
             <View style={{paddingLeft:15, paddingRight:15}}>
                 {
@@ -50,9 +44,16 @@ function Event({navigation}){
                     <FlatList
                         data={eventList}
                         numColumns={1}
-                        style={{height:'72%'}}
+                        style={{height: '89%', marginTop:72}}
                         showsVerticalScrollIndicator={false} 
                         keyExtractor={(item, index) => index.toString()}
+                        ListHeaderComponent={()=><FlatListHeader title={
+                            {
+                                img: require('./../../assets/event_icon.png'),
+                                heading : 'Event',
+                                subHeading :''
+                            }
+                        }/>}
                         renderItem={({ item }) => (
                         <View style={styles.postBox}>
                             <View style={{width:'30%'}}>

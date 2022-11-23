@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert, Fla
 import MidContent from "../components/midContent";
 import { apiUrl } from "../constant";
 import { useEffect, useState } from "react";
+import FlatListHeader from "../components/flatListHeader";
 
 function NoticeBoard({ navigation }) {
     const [noticeList, setNoticeData] = useState([]);
@@ -36,20 +37,21 @@ function NoticeBoard({ navigation }) {
     return (
         <View style={styles.parent}>
             <TopBar />
-            <MidContent title={
-                {
-                    img: require('./../../assets/notice_board.png'),
-                    heading: 'Notice Board',
-                    subHeading: ''
-                }
-            } />
-            <View style={{ padding: 10 }}>
+            
+            <View style={{ paddingLeft: 10, paddingRight:10 }}>
                 <FlatList
                     data={noticeList}
                     numColumns={1}
-                    style={{height:'72%'}}
+                    style={{height: '89%', marginTop:72}}
                     showsVerticalScrollIndicator={false} 
                     keyExtractor={(item, index) => index.toString()}
+                    ListHeaderComponent={()=><FlatListHeader title={
+                        {
+                            img: require('./../../assets/notice_board.png'),
+                            heading: 'Notice Board',
+                            subHeading: ''
+                        }
+                    } />}
                     renderItem={({ item }) => (
                         <TouchableOpacity style={styles.postBox} activeOpacity={0.8}
                             onPress={() => navigation.navigate('Notice Board Detail', { noticeId: item.id })}

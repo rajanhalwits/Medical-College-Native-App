@@ -59,14 +59,15 @@ function NoticeBoardDetail({route, navigation}){
     return(
         <View contentContainerStyle={styles.parent}>
         <TopBar/>
-        <MidContent title={
-            {
-                img: require('./../../assets/notice_board.png'),
-                heading : 'Notice Board',
-                subHeading :''
-            }
-        }  />
+        
             <View style={styles.detailBox}>
+                <MidContent title={
+                    {
+                        img: require('./../../assets/notice_board.png'),
+                        heading : 'Notice Board',
+                        subHeading :''
+                    }
+                }  />
                 <View style={styles.postBox}>
                     <View style={{width:'100%'}}>
                         <View style={{width:'100%'}}>
