@@ -1,5 +1,5 @@
 import TopBar from "./topBar";
-import { View, Text, StyleSheet, Image, FlatList, Linking, TouchableOpacity, Platform, TextInput } from 'react-native'
+import { View, Text, StyleSheet, Image, FlatList, Linking, TouchableOpacity, Platform, TextInput, Alert, AsyncStorage } from 'react-native'
 import FlatListHeader from "../components/flatListHeader";
 import { useEffect, useState } from "react";
 import { apiUrl } from "../constant";
@@ -27,12 +27,33 @@ function Alumni({ navigation }) {
 
     const [isFilter, setFilter] = useState(false)
     useEffect(() => {
-        fetchAlumi();
+        retrieveData();
         fetchYear();
         fetchCourse();
         fetchCountry();
-    }, [name])
-    const fetchAlumi = () => {
+    }, [name]);
+    const retrieveData = async () => {
+        try {
+          const value = await AsyncStorage.getItem('user-info');
+          const deviceToken =  await AsyncStorage.getItem('DeviceToken');
+          if (value !== null) {
+            console.log(JSON.parse(value), deviceToken)
+            var userId = JSON.parse(value).signup_aid;
+            if(deviceToken !==null){
+                fetchAlumi(userId, deviceToken)
+            }else{
+                fetchAlumi(userId, '')
+            }
+            
+          }else{
+            navigation.navigate('MMCH')
+          }
+        } catch (error) {
+          // Error retrieving data DeviceToken
+        }
+      }
+    const fetchAlumi = (userId, deviceToken) => {
+        console.log('-->', userId)
         function json(response) {
             return response.json()
         }
@@ -44,13 +65,14 @@ function Alumni({ navigation }) {
             },
             body: "name=" + name + "&courses_id=" + selectedCourse + "&year_of_entry=" + selectedEntry +
                 "&batch_id=" + selectedBatch + "&country_id=" + selectedCountry + "&states_id=" + selectedState +
-                "&city_id=" + selectedCity
+                "&city_id=" + selectedCity + "&user_id=" + userId + "&device_token=" + deviceToken
         })
             .then(json)
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
                 if (response.status == 'success') {
-                    setAlumniData(response.alumniList)
+                    setAlumniData(response.alumniList);
+                    
                 } else {
                     Alert.alert(response.message)
                 }
@@ -60,7 +82,7 @@ function Alumni({ navigation }) {
             });
     }
     const sendWhatsApp = (whatsappNo, msg) => {
-        let phoneWithCountryCode = `+91${whatsappNo}`;
+        let phoneWithCountryCode = `91${whatsappNo}`;
         let mobile =
             Platform.OS == "ios" ? phoneWithCountryCode : "+" + phoneWithCountryCode;
         if (mobile) {
@@ -253,6 +275,9 @@ function Alumni({ navigation }) {
             {
                 isFilter ?
                     <View style={styles.filterForm}>
+                        <TouchableOpacity activeOpacity={0.8} style={styles.closeButton} onPress={()=>setFilter(false)}>
+                            <Image source={require(`./../../assets/close.png`)} style={styles.closeIcon} />
+                        </TouchableOpacity>
                         <Text style={styles.formLabel}>Year of Entry</Text>
                         <View style={styles.selectBox}>
                             <Picker selectedValue={selectedEntry} style={styles.pickerItem}
@@ -436,7 +461,8 @@ function Alumni({ navigation }) {
                             <View style={styles.contact}>
                                 {
                                     item.whatsapp_number != '' ?
-                                        <TouchableOpacity activeOpacity={0.8} onPress={() => sendWhatsApp(item.whatsapp_number, item.whatsappmsg)}>
+                                        <TouchableOpacity activeOpacity={0.8} 
+                                        onPress={() => sendWhatsApp(item.whatsapp_number, item.whatsappmsg)}>
                                             <Image source={require('./../../assets/whatsapp.png')} style={styles.contactIcon} />
                                         </TouchableOpacity>
                                         :
@@ -599,5 +625,15 @@ const styles = StyleSheet.create({
         marginTop: -34,
         marginLeft: 5,
     },
+    closeButton:{
+        position:'absolute',
+        right:15,
+        zIndex:8,
+        top:10
+    },
+    closeIcon:{
+        width:25,
+        height:25
+    }
 });
 export default Alumni;

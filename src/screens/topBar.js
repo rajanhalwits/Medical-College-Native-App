@@ -225,11 +225,11 @@ const styles = StyleSheet.create({
     backgroundColor:'rgba(0,0,0,0.8)', 
     width:'100%', 
     height:900, 
-    zIndex:2
+    zIndex:99
   },
     menuDraw:{
       position:'absolute', 
-      zIndex:9, 
+      zIndex:999, 
       backgroundColor:'#FFF', 
       top:0, 
       width:'80%',
