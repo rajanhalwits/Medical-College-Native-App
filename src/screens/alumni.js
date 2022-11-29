@@ -8,6 +8,7 @@ import { Picker } from '@react-native-picker/picker';
 
 function Alumni({ navigation }) {
     const [alumniData, setAlumniData] = useState([]);
+    const [searchData, setSearchData] = useState([])
     const [name, setName] = useState('');
     const [selectedBatch, setSelectedBatch] = useState('');
     const [selectedEntry, setSelectedEntry] = useState('');
@@ -25,13 +26,15 @@ function Alumni({ navigation }) {
     const [stateList, setStateData] = useState([]);
     const [cityList, setCityData] = useState([]);
 
-    const [isFilter, setFilter] = useState(false)
+    const [isFilter, setFilter] = useState(false);
+    const [userID, setUserID] = useState('');
+    const [device_token, setDeviceToken] = useState('');
     useEffect(() => {
         retrieveData();
         fetchYear();
         fetchCourse();
         fetchCountry();
-    }, [name]);
+    }, []);
     const retrieveData = async () => {
         try {
           const value = await AsyncStorage.getItem('user-info');
@@ -39,8 +42,10 @@ function Alumni({ navigation }) {
           if (value !== null) {
             console.log(JSON.parse(value), deviceToken)
             var userId = JSON.parse(value).signup_aid;
+            setUserID(userId)
             if(deviceToken !==null){
-                fetchAlumi(userId, deviceToken)
+                fetchAlumi(userId, deviceToken);
+                setDeviceToken(deviceToken)
             }else{
                 fetchAlumi(userId, '')
             }
@@ -63,7 +68,7 @@ function Alumni({ navigation }) {
             headers: {
                 "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
             },
-            body: "name=" + name + "&courses_id=" + selectedCourse + "&year_of_entry=" + selectedEntry +
+            body: "name=" + '' + "&courses_id=" + selectedCourse + "&year_of_entry=" + selectedEntry +
                 "&batch_id=" + selectedBatch + "&country_id=" + selectedCountry + "&states_id=" + selectedState +
                 "&city_id=" + selectedCity + "&user_id=" + userId + "&device_token=" + deviceToken
         })
@@ -72,7 +77,7 @@ function Alumni({ navigation }) {
                 //console.log(response);
                 if (response.status == 'success') {
                     setAlumniData(response.alumniList);
-                    
+                    setSearchData(response.alumniList);
                 } else {
                     Alert.alert(response.message)
                 }
@@ -258,7 +263,7 @@ function Alumni({ navigation }) {
         setSelectedCourse(courseId);
     }
     const applyFilter = () => {
-        fetchAlumi();
+        fetchAlumi(userID, device_token);
         setFilter(!isFilter);
     }
     const resetFilter = () => {
@@ -268,6 +273,14 @@ function Alumni({ navigation }) {
         setSelectedCountry('');
         setSelectedState('');
         setSelectedCity('');
+        
+    }
+    const searchName =(query)=>{
+        setSearchData(alumniData.filter(fullName =>(fullName.full_name).toLowerCase().includes(query.toLowerCase())));
+    }
+    const closeFilter =()=>{
+        fetchAlumi(userID, device_token);
+        setFilter(false);
     }
     return (
         <View contentContainerStyle={styles.parent}>
@@ -275,7 +288,7 @@ function Alumni({ navigation }) {
             {
                 isFilter ?
                     <View style={styles.filterForm}>
-                        <TouchableOpacity activeOpacity={0.8} style={styles.closeButton} onPress={()=>setFilter(false)}>
+                        <TouchableOpacity activeOpacity={0.8} style={styles.closeButton} onPress={()=>closeFilter()}>
                             <Image source={require(`./../../assets/close.png`)} style={styles.closeIcon} />
                         </TouchableOpacity>
                         <Text style={styles.formLabel}>Year of Entry</Text>
@@ -424,7 +437,7 @@ function Alumni({ navigation }) {
                 }
 
                 <FlatList
-                    data={alumniData}
+                    data={searchData}
                     style={{ height: '89%', marginTop: 72 }}
                     showsVerticalScrollIndicator={false}
                     numColumns={1}
@@ -444,7 +457,8 @@ function Alumni({ navigation }) {
                                     subHeading: ''
                                 }
                             } />
-                            <TextInput style={styles.input} placeholder="Search by name..." onChangeText={(query) => setName(query)} />
+                            <TextInput style={styles.input} placeholder="Search by name..." 
+                            onChangeText={(query) => searchName(query)} />
                         </View>
                     }
                     renderItem={({ item }) => (
@@ -495,7 +509,10 @@ const styles = StyleSheet.create({
         right: 15,
         backgroundColor: '#0866A6',
         borderRadius: 25,
-        padding: 8,
+        paddingLeft:10,
+        paddingRight:10,
+        paddingBottom:6,
+        paddingTop:14
     },
     filterReset: {
         position: 'absolute',

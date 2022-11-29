@@ -1,8 +1,7 @@
 import TopBar from "./topBar";
 import{View, Text, StyleSheet, Image, FlatList, Alert} from 'react-native'
-import MidContent from "../components/midContent";
 import { useEffect, useState } from "react";
-import { apiUrl, imagePath } from "../constant";
+import { apiUrl } from "../constant";
 import FlatListHeader from "../components/flatListHeader";
 
 function Event({navigation}){
@@ -56,10 +55,10 @@ function Event({navigation}){
                         }/>}
                         renderItem={({ item }) => (
                         <View style={styles.postBox}>
-                            <View style={{width:'30%'}}>
-                                <Image source={{uri:item.photo}} style={{ width: 85, height: 85, borderRadius:85/2}} />
+                            <View style={{width:80}}>
+                                <Image source={{uri:item.photo}} style={{ width: 70, height: 70, borderRadius:85/2}} />
                             </View>
-                            <View style={{width:'70%',}}> 
+                            <View style={{width:'85%', justifyContent:'center'}}> 
                                 <Text style={{fontWeight:'bold', color:'#333'}}>{item.title}</Text>
                                 <Text numberOfLines={2} ellipsizeMode='tail' style={{color:'#999', fontSize:12}}>{item.description}</Text>
                                 <Text style={{color:'#999', fontSize:12, marginTop:5,}}>

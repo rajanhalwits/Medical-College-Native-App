@@ -43,7 +43,7 @@ function WeAreHiring({navigation}){
                         data={jobList}
                         numColumns={1}
                         keyExtractor={(item, index) => index.toString()}
-                        style={{height: '89%', marginTop:72, backgroundColor:'pink'}}
+                        style={{height: '89%', marginTop:72}}
                         showsVerticalScrollIndicator={false} 
                         ListHeaderComponent={()=><FlatListHeader title={
                             {
