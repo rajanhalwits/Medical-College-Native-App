@@ -39,7 +39,7 @@ function Alumni({ navigation }) {
         try {
           const value = await AsyncStorage.getItem('user-info');
           const deviceToken =  await AsyncStorage.getItem('DeviceToken');
-          Alert.alert(deviceToken)
+          //Alert.alert(deviceToken)
           if (value !== null) {
             console.log(JSON.parse(value), deviceToken)
             var userId = JSON.parse(value).signup_aid;

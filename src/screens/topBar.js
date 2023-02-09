@@ -1,10 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
 import { View, StyleSheet, Image, Text, TouchableOpacity, ScrollView, AsyncStorage } from "react-native";
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
+import { apiUrl } from "../constant";
+
 function TopBar() {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [userId, setUserId] = useState('');
   const [profilePicture, setProfilePicture] = useState('')
   const navigation = useNavigation();
   const route = useRoute();
@@ -31,6 +34,7 @@ function TopBar() {
         setName(JSON.parse(value).full_name);
         setEmail(JSON.parse(value).email_id);
         setProfilePicture(JSON.parse(value).profile_pics);
+        setUserId(JSON.parse(value).user_id);
       } else {
         navigation.navigate('MMCH')
       }
@@ -38,9 +42,29 @@ function TopBar() {
       // Error retrieving data
     }
   }
-  const logout = () => {
-    console.log('in logout')
-    AsyncStorage.clear();
+  const logout =()=>{    
+    function json(response) {
+      return response.json()
+  }
+  var url = `${apiUrl}logout`
+  fetch(url, {
+      method: 'post',
+      headers: {
+        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+    },
+      body: "user_id=" + userId
+  })
+  .then(json)
+  .then(function (response) {
+      console.log(response);
+      clearLog()
+  })
+  .catch(function (error) {
+      console.error(error);
+  });
+  }
+  const clearLog = async () => {
+    await AsyncStorage.removeItem('user-info')
     navigation.replace('MMCH');
   }
   const goTOPrevScreen = () => {

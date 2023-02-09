@@ -30,17 +30,28 @@
       ]
     ],
     "android": {
-      "permissions":["CAMERA", "CAMERA_ROLL", "READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"],
-      
-      "versionCode": 12,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.CAMERA_ROLL",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "versionCode": 13,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#f49100"
       },
-      "package": "mmch.app"
+      "package": "mmch.app",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4795d4f2-529c-45b1-8f05-fa223a7473ab"
+      }
     }
   }
 }

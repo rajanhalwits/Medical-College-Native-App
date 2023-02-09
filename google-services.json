@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "123908093516",
+    "project_id": "mmchalumni",
+    "storage_bucket": "mmchalumni.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123908093516:android:6ec9d50e27fea9a79066e9",
+        "android_client_info": {
+          "package_name": "mmch.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "123908093516-au0bkr2la6oe4f1q497haotbh2bsm2g2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClVjzKp_lD62hayaODBLx9GzRAtGk-tZo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "123908093516-au0bkr2la6oe4f1q497haotbh2bsm2g2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -41,10 +41,9 @@ function Login({ navigation }) {
             const devToken = await AsyncStorage.getItem('DeviceToken');
             if (devToken !== null) {
                 console.log('token on login screen'+ devToken);
-                Alert.alert('token on login screen '+ devToken)
                 userLogin(devToken)
             }else{
-                Alert.alert('token not found')
+                console.log('token not found')
                 userLogin('')
             }
         } catch (error) {
