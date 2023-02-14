@@ -19,7 +19,8 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "mmch.app"
+      "bundleIdentifier": "com.halwits.mmch",
+      "buildNumber" :"1"
     },
     "plugins": [
       [

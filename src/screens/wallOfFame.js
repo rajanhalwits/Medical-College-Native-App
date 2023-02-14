@@ -64,7 +64,7 @@ function WallOfFame({ navigation }) {
                             </View>
                             <View style={{ width: '80%', justifyContent: 'center' }}>
                                 <Text style={{ fontWeight: 'bold' }}>{item.full_name}</Text>
-                                <Text style={{ color: '#999' }}>{item.course} ({item.batch_name})</Text>
+                                <Text style={{ color: '#999' }}>{item.course+' '}({item.batch_name})</Text>
                                 <Text style={{ color: '#999' }}>{item.current_specializatoin}</Text>
                             </View>
                         </View>

@@ -47,9 +47,6 @@ function App() {
   const [auth, setAuth] = useState(null)
   const notificationListener = useRef();
   const responseListener = useRef();
-  const [text,setText] = useState('data on click');
-  
-  const [textRec,setTextRec] = useState('data on receive');
 
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
   useEffect(() => {
@@ -60,9 +57,9 @@ function App() {
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
       setNotification(notification);
-      setTextRec(JSON.stringify(notification)); 
+      //setTextRec(JSON.stringify(notification)); 
       const notify = notification.request.trigger.remoteMessage.data;
-      Alert.alert('__ ',JSON.stringify(notify));
+      //Alert.alert('__ ',JSON.stringify(notify));
       checkLogin(notify.link, notify.id);
       
     });
@@ -71,7 +68,7 @@ function App() {
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
       
       const notifyData = response.notification.request.trigger.remoteMessage.data; 
-      setText(JSON.stringify(notifyData));      
+      //setText(JSON.stringify(notifyData));      
       checkLogin(notifyData.link, notifyData.id);
 
     });

@@ -63,14 +63,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
         borderRadius: 50,
         left: 15,
-        top: '52%',
+        top: '48%',
         zIndex: 1,
     },
     rightArrow: {
         position: 'absolute',
         borderRadius: 50,
         right: 15,
-        top: '52%',
+        top: '48%',
         zIndex: 1,
     },
     imgArrow: {
